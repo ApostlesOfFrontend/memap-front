@@ -3,6 +3,7 @@ import { Eye, EyeOff } from "lucide-react";
 import { type Dispatch, type SetStateAction, useState } from "react";
 import { Button } from "../ui/button";
 import { Input as ShadInput } from "../ui/input";
+import { Label } from "../ui/label";
 import { useFieldContext } from "./context";
 
 export interface InputProps {
@@ -36,7 +37,9 @@ export const HiddenInput = ({
 
 	return (
 		<div>
-			<label htmlFor={`input-${label}`}>{label}</label>
+			<Label className="mb-2" htmlFor={`input-${label}`}>
+				{label}
+			</Label>
 			<div className="relative">
 				<ShadInput
 					id={`input-${label}`}

@@ -1,5 +1,6 @@
 import { useStore } from "@tanstack/react-form";
 import { Input as ShadInput } from "../ui/input";
+import { Label } from "../ui/label";
 import { useFieldContext } from "./context";
 
 export interface InputProps {
@@ -15,7 +16,9 @@ export const Input = ({ label, description, placeholder }: InputProps) => {
 
 	return (
 		<div>
-			<label htmlFor={`input-${label}`}>{label}</label>
+			<Label className="mb-2" htmlFor={`input-${label}`}>
+				{label}
+			</Label>
 			<ShadInput
 				id={`input-${label}`}
 				value={field.state.value}

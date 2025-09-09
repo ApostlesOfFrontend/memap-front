@@ -27,13 +27,15 @@ export const RegisterForm = () => {
 	return (
 		<Card className="max-w-sm w-full">
 			<CardHeader>
-				<CardTitle className="text-2xl">Create an account</CardTitle>
-				<CardDescription className="text-lg">
+				<CardTitle className="text-2xl text-center">
+					Create an account
+				</CardTitle>
+				<CardDescription className="text-center">
 					Begin your journey
 				</CardDescription>
 			</CardHeader>
 			<CardContent>
-				<form className="flex gap-2 flex-col">
+				<form className="flex gap-3 flex-col">
 					<form.AppField
 						name="emailAddress"
 						children={(field) => (
