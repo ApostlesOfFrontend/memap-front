@@ -10,6 +10,7 @@ import {
 import { formOptions } from "@tanstack/react-form";
 import { Link } from "@tanstack/react-router";
 import { useState } from "react";
+import { registerSchema } from "./register-schema";
 
 const registerFormOpts = formOptions({
 	defaultValues: {
@@ -18,6 +19,10 @@ const registerFormOpts = formOptions({
 		password: "",
 		confirmPassword: "",
 	},
+	validators: {
+		onSubmit: registerSchema,
+	},
+	onSubmit: () => console.log("submit"),
 });
 
 export const RegisterForm = () => {
@@ -35,42 +40,50 @@ export const RegisterForm = () => {
 				</CardDescription>
 			</CardHeader>
 			<CardContent>
-				<form className="flex gap-3 flex-col">
-					<form.AppField
-						name="emailAddress"
-						children={(field) => (
-							<field.Input label="Email" placeholder="mail@example.com" />
-						)}
-					/>
-					<form.AppField
-						name="name"
-						children={(field) => (
-							<field.Input label="Name" placeholder="Joe Doe" />
-						)}
-					/>
-					<form.AppField
-						name="password"
-						children={(field) => (
-							<field.HiddenInput
-								label="Password"
-								placeholder="********"
-								show={showPassword}
-								setShow={setShowPassword}
-							/>
-						)}
-					/>
-					<form.AppField
-						name="confirmPassword"
-						children={(field) => (
-							<field.HiddenInput
-								label="Confirm Password"
-								placeholder="********"
-								show={showPassword}
-								setShow={setShowPassword}
-							/>
-						)}
-					/>
-					<form.SubmitButton label="Sign up" className="mt-2" />
+				<form
+					className="flex gap-3 flex-col"
+					onSubmit={(e) => {
+						e.preventDefault();
+						form.handleSubmit();
+					}}
+				>
+					<form.AppForm>
+						<form.AppField
+							name="emailAddress"
+							children={(field) => (
+								<field.Input label="Email" placeholder="mail@example.com" />
+							)}
+						/>
+						<form.AppField
+							name="name"
+							children={(field) => (
+								<field.Input label="Name" placeholder="Joe Doe" />
+							)}
+						/>
+						<form.AppField
+							name="password"
+							children={(field) => (
+								<field.HiddenInput
+									label="Password"
+									placeholder="********"
+									show={showPassword}
+									setShow={setShowPassword}
+								/>
+							)}
+						/>
+						<form.AppField
+							name="confirmPassword"
+							children={(field) => (
+								<field.HiddenInput
+									label="Confirm Password"
+									placeholder="********"
+									show={showPassword}
+									setShow={setShowPassword}
+								/>
+							)}
+						/>
+						<form.SubmitButton label="Sign up" className="mt-2" />
+					</form.AppForm>
 				</form>
 				<div className="flex flex-col gap-4 mt-4">
 					<div className="after:border-border relative text-center text-sm after:absolute after:inset-0 after:top-1/2 after:z-0 after:flex after:items-center after:border-t">

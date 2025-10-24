@@ -53,14 +53,15 @@ export const HiddenInput = ({
 					type="button"
 					variant="outline"
 					onClick={handleChange}
-					className="absolute border-0 top-0 right-0 "
+					className="absolute border-0 top-0 right-0"
+					tabIndex={-1}
 				>
 					{isVisible ? <EyeOff /> : <Eye />}
 				</Button>
 			</div>
 			{description && <div>{placeholder}</div>}
 			{errors.length > 0 && (
-				<div className="text-red-500">{errors.join(", ")}</div>
+				<div className="text-red-500 text-sm">{errors[0].message}</div>
 			)}
 		</div>
 	);

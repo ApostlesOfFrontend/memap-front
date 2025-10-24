@@ -28,7 +28,7 @@ export const Input = ({ label, description, placeholder }: InputProps) => {
 			/>
 			{description && <div>{placeholder}</div>}
 			{errors.length > 0 && (
-				<div className="text-red-500">{errors.join(", ")}</div>
+				<div className="text-red-500 text-sm">{errors[0].message}</div>
 			)}
 		</div>
 	);

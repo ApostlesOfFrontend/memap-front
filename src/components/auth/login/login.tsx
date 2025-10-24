@@ -9,12 +9,17 @@ import {
 } from "@/components/ui/card";
 import { formOptions } from "@tanstack/react-form";
 import { Link } from "@tanstack/react-router";
+import { loginSchema } from "./login-schema";
 
 const loginFormOptions = formOptions({
 	defaultValues: {
 		email: "",
 		password: "",
 	},
+	validators: {
+		onSubmit: loginSchema,
+	},
+	onSubmit: () => console.log("submit"),
 });
 
 export const LoginForm = () => {
@@ -30,20 +35,28 @@ export const LoginForm = () => {
 			</CardHeader>
 
 			<CardContent>
-				<form className="flex gap-3 flex-col">
-					<form.AppField
-						name="email"
-						children={(field) => (
-							<field.Input label="Email" placeholder="mail@example.com" />
-						)}
-					/>
-					<form.AppField
-						name="password"
-						children={(field) => (
-							<field.HiddenInput label="Password" placeholder="********" />
-						)}
-					/>
-					<form.SubmitButton label="Sign in" className="mt-2" />
+				<form
+					className="flex gap-3 flex-col"
+					onSubmit={(e) => {
+						e.preventDefault();
+						form.handleSubmit();
+					}}
+				>
+					<form.AppForm>
+						<form.AppField
+							name="email"
+							children={(field) => (
+								<field.Input label="Email" placeholder="mail@example.com" />
+							)}
+						/>
+						<form.AppField
+							name="password"
+							children={(field) => (
+								<field.HiddenInput label="Password" placeholder="********" />
+							)}
+						/>
+						<form.SubmitButton label="Sign in" className="mt-2" />
+					</form.AppForm>
 				</form>
 				<div className="flex flex-col gap-4 mt-4">
 					<div className="after:border-border relative text-center text-sm after:absolute after:inset-0 after:top-1/2 after:z-0 after:flex after:items-center after:border-t">
