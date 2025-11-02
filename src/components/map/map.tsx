@@ -1,4 +1,5 @@
 import { useRef } from "react";
+import "mapbox-gl/dist/mapbox-gl.css";
 import { useMapInit } from "./hooks/use-initialize";
 import { useRenderRoute } from "./hooks/use-render-route";
 
