@@ -7,22 +7,48 @@ import {
 	CardHeader,
 	CardTitle,
 } from "@/components/ui/card";
+import { auth } from "@/lib/auth-client";
 import { formOptions } from "@tanstack/react-form";
-import { Link } from "@tanstack/react-router";
+import { Link, useNavigate } from "@tanstack/react-router";
+import { toast } from "sonner";
 import { loginSchema } from "./login-schema";
 
-const loginFormOptions = formOptions({
-	defaultValues: {
-		email: "",
-		password: "",
-	},
-	validators: {
-		onSubmit: loginSchema,
-	},
-	onSubmit: () => console.log("submit"),
-});
+const useLoginFormOptions = () => {
+	const navigate = useNavigate();
+
+	const loginFormOptions = formOptions({
+		defaultValues: {
+			email: "",
+			password: "",
+		},
+		validators: {
+			onSubmit: loginSchema,
+		},
+		onSubmit: async ({ value }) => {
+			const { error } = await auth.signIn.email({
+				email: value.email,
+				password: value.password,
+			});
+
+			//TODO: refactor error handling
+			if (error) {
+				if (error.code === "INVALID_EMAIL_OR_PASSWORD") {
+					toast.error("Invalid email or password");
+					return;
+				}
+				toast.error("There was an error when you tried to log in", {
+					description: "If error persists please contact administration",
+				});
+			} else {
+				navigate({ to: "/protected-route" });
+			}
+		},
+	});
+	return loginFormOptions;
+};
 
 export const LoginForm = () => {
+	const loginFormOptions = useLoginFormOptions();
 	const form = useAppForm({ ...loginFormOptions });
 
 	return (
@@ -64,6 +90,7 @@ export const LoginForm = () => {
 							Or continue with
 						</span>
 					</div>
+					{/**TODO: implement google social sign on */}
 					<Button className="w-full" variant="outline">
 						Login with Google
 					</Button>

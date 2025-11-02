@@ -10,6 +10,8 @@
 
 import { Route as rootRouteImport } from './routes/__root'
 import { Route as RegisterRouteImport } from './routes/register'
+import { Route as ProtectedRoute2RouteImport } from './routes/protected-route2'
+import { Route as ProtectedRouteRouteImport } from './routes/protected-route'
 import { Route as MapDemoRouteImport } from './routes/map-demo'
 import { Route as LoginRouteImport } from './routes/login'
 import { Route as IndexRouteImport } from './routes/index'
@@ -18,6 +20,16 @@ import { Route as DemoTanstackQueryRouteImport } from './routes/demo.tanstack-qu
 const RegisterRoute = RegisterRouteImport.update({
   id: '/register',
   path: '/register',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const ProtectedRoute2Route = ProtectedRoute2RouteImport.update({
+  id: '/protected-route2',
+  path: '/protected-route2',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const ProtectedRouteRoute = ProtectedRouteRouteImport.update({
+  id: '/protected-route',
+  path: '/protected-route',
   getParentRoute: () => rootRouteImport,
 } as any)
 const MapDemoRoute = MapDemoRouteImport.update({
@@ -45,6 +57,8 @@ export interface FileRoutesByFullPath {
   '/': typeof IndexRoute
   '/login': typeof LoginRoute
   '/map-demo': typeof MapDemoRoute
+  '/protected-route': typeof ProtectedRouteRoute
+  '/protected-route2': typeof ProtectedRoute2Route
   '/register': typeof RegisterRoute
   '/demo/tanstack-query': typeof DemoTanstackQueryRoute
 }
@@ -52,6 +66,8 @@ export interface FileRoutesByTo {
   '/': typeof IndexRoute
   '/login': typeof LoginRoute
   '/map-demo': typeof MapDemoRoute
+  '/protected-route': typeof ProtectedRouteRoute
+  '/protected-route2': typeof ProtectedRoute2Route
   '/register': typeof RegisterRoute
   '/demo/tanstack-query': typeof DemoTanstackQueryRoute
 }
@@ -60,19 +76,37 @@ export interface FileRoutesById {
   '/': typeof IndexRoute
   '/login': typeof LoginRoute
   '/map-demo': typeof MapDemoRoute
+  '/protected-route': typeof ProtectedRouteRoute
+  '/protected-route2': typeof ProtectedRoute2Route
   '/register': typeof RegisterRoute
   '/demo/tanstack-query': typeof DemoTanstackQueryRoute
 }
 export interface FileRouteTypes {
   fileRoutesByFullPath: FileRoutesByFullPath
-  fullPaths: '/' | '/login' | '/map-demo' | '/register' | '/demo/tanstack-query'
+  fullPaths:
+    | '/'
+    | '/login'
+    | '/map-demo'
+    | '/protected-route'
+    | '/protected-route2'
+    | '/register'
+    | '/demo/tanstack-query'
   fileRoutesByTo: FileRoutesByTo
-  to: '/' | '/login' | '/map-demo' | '/register' | '/demo/tanstack-query'
+  to:
+    | '/'
+    | '/login'
+    | '/map-demo'
+    | '/protected-route'
+    | '/protected-route2'
+    | '/register'
+    | '/demo/tanstack-query'
   id:
     | '__root__'
     | '/'
     | '/login'
     | '/map-demo'
+    | '/protected-route'
+    | '/protected-route2'
     | '/register'
     | '/demo/tanstack-query'
   fileRoutesById: FileRoutesById
@@ -81,6 +115,8 @@ export interface RootRouteChildren {
   IndexRoute: typeof IndexRoute
   LoginRoute: typeof LoginRoute
   MapDemoRoute: typeof MapDemoRoute
+  ProtectedRouteRoute: typeof ProtectedRouteRoute
+  ProtectedRoute2Route: typeof ProtectedRoute2Route
   RegisterRoute: typeof RegisterRoute
   DemoTanstackQueryRoute: typeof DemoTanstackQueryRoute
 }
@@ -92,6 +128,20 @@ declare module '@tanstack/react-router' {
       path: '/register'
       fullPath: '/register'
       preLoaderRoute: typeof RegisterRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/protected-route2': {
+      id: '/protected-route2'
+      path: '/protected-route2'
+      fullPath: '/protected-route2'
+      preLoaderRoute: typeof ProtectedRoute2RouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/protected-route': {
+      id: '/protected-route'
+      path: '/protected-route'
+      fullPath: '/protected-route'
+      preLoaderRoute: typeof ProtectedRouteRouteImport
       parentRoute: typeof rootRouteImport
     }
     '/map-demo': {
@@ -129,6 +179,8 @@ const rootRouteChildren: RootRouteChildren = {
   IndexRoute: IndexRoute,
   LoginRoute: LoginRoute,
   MapDemoRoute: MapDemoRoute,
+  ProtectedRouteRoute: ProtectedRouteRoute,
+  ProtectedRoute2Route: ProtectedRoute2Route,
   RegisterRoute: RegisterRoute,
   DemoTanstackQueryRoute: DemoTanstackQueryRoute,
 }

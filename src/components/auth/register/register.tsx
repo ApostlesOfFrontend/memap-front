@@ -7,25 +7,46 @@ import {
 	CardHeader,
 	CardTitle,
 } from "@/components/ui/card";
+import { auth } from "@/lib/auth-client";
 import { formOptions } from "@tanstack/react-form";
-import { Link } from "@tanstack/react-router";
+import { Link, useNavigate } from "@tanstack/react-router";
 import { useState } from "react";
+import { toast } from "sonner";
 import { registerSchema } from "./register-schema";
 
-const registerFormOpts = formOptions({
-	defaultValues: {
-		name: "",
-		emailAddress: "",
-		password: "",
-		confirmPassword: "",
-	},
-	validators: {
-		onSubmit: registerSchema,
-	},
-	onSubmit: () => console.log("submit"),
-});
+const useRegisterFormOptions = () => {
+	const navigate = useNavigate();
+	const registerFormOpts = formOptions({
+		defaultValues: {
+			name: "",
+			emailAddress: "",
+			password: "",
+			confirmPassword: "",
+		},
+		validators: {
+			onSubmit: registerSchema,
+		},
+		onSubmit: async ({ value }) => {
+			const { error } = await auth.signUp.email({
+				name: value.name,
+				email: value.emailAddress,
+				password: value.password,
+			});
+
+			//TODO: refactor better-auth error handling
+			if (error) {
+				toast.error("There was an error while creating account");
+				return;
+			}
+			//TODO: redirect to onboarding or paywall
+			navigate({ to: "/protected-route" });
+		},
+	});
+	return registerFormOpts;
+};
 
 export const RegisterForm = () => {
+	const registerFormOpts = useRegisterFormOptions();
 	const form = useAppForm({ ...registerFormOpts });
 	const [showPassword, setShowPassword] = useState(false);
 
@@ -91,6 +112,7 @@ export const RegisterForm = () => {
 							Or continue with
 						</span>
 					</div>
+					{/**TODO: implement google social sign on */}
 					<Button className="w-full" variant="outline">
 						Sign up with Google
 					</Button>
