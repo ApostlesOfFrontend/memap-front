@@ -2,6 +2,35 @@ import { selectedRouteStore } from "@/state/selected-route";
 import type { FeatureCollection, MultiLineString } from "geojson";
 import { type RefObject, useEffect, useMemo } from "react";
 
+const calculateBounds = (
+	coordinates: [number, number][],
+): [[number, number], [number, number]] => {
+	if (coordinates.length === 0) {
+		// Default bounds if no coordinates
+		return [
+			[0, 0],
+			[0, 0],
+		];
+	}
+
+	let minLng = coordinates[0][0];
+	let maxLng = coordinates[0][0];
+	let minLat = coordinates[0][1];
+	let maxLat = coordinates[0][1];
+
+	for (const [lng, lat] of coordinates) {
+		minLng = Math.min(minLng, lng);
+		maxLng = Math.max(maxLng, lng);
+		minLat = Math.min(minLat, lat);
+		maxLat = Math.max(maxLat, lat);
+	}
+
+	return [
+		[minLng, minLat],
+		[maxLng, maxLat],
+	];
+};
+
 export const useRenderRoute = (map: RefObject<mapboxgl.Map | null>) => {
 	const { route } = selectedRouteStore();
 
@@ -93,6 +122,15 @@ export const useRenderRoute = (map: RefObject<mapboxgl.Map | null>) => {
 				| undefined;
 			if (source) {
 				source.setData(transformedRoute);
+
+				// Animate map to fit the route bounds
+				if (route && route.length > 0) {
+					const bounds = calculateBounds(route);
+					mapInstance.fitBounds(bounds, {
+						padding: 50,
+						duration: 2000,
+					});
+				}
 			}
 		};
 
@@ -106,5 +144,5 @@ export const useRenderRoute = (map: RefObject<mapboxgl.Map | null>) => {
 				setTimeout(updateRoute, 0);
 			});
 		}
-	}, [map, transformedRoute]);
+	}, [map, transformedRoute, route]);
 };
