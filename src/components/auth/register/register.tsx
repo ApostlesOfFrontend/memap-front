@@ -39,7 +39,7 @@ const useRegisterFormOptions = () => {
 				return;
 			}
 			//TODO: redirect to onboarding or paywall
-			navigate({ to: "/protected-route" });
+			navigate({ to: "/app/map" });
 		},
 	});
 	return registerFormOpts;
