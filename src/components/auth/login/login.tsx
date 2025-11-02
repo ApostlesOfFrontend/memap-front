@@ -40,7 +40,7 @@ const useLoginFormOptions = () => {
 					description: "If error persists please contact administration",
 				});
 			} else {
-				navigate({ to: "/protected-route" });
+				navigate({ to: "/app/map" });
 			}
 		},
 	});

@@ -9,37 +9,22 @@
 // Additionally, you should also exclude this file from your linter and/or formatter to prevent it from being checked or modified.
 
 import { Route as rootRouteImport } from './routes/__root'
-import { Route as RegisterRouteImport } from './routes/register'
-import { Route as ProtectedRoute2RouteImport } from './routes/protected-route2'
-import { Route as ProtectedRouteRouteImport } from './routes/protected-route'
 import { Route as MapDemoRouteImport } from './routes/map-demo'
-import { Route as LoginRouteImport } from './routes/login'
+import { Route as AppRouteRouteImport } from './routes/app/route'
 import { Route as IndexRouteImport } from './routes/index'
 import { Route as DemoTanstackQueryRouteImport } from './routes/demo.tanstack-query'
+import { Route as AppMapRouteImport } from './routes/app/map'
+import { Route as authRegisterRouteImport } from './routes/(auth)/register'
+import { Route as authLoginRouteImport } from './routes/(auth)/login'
 
-const RegisterRoute = RegisterRouteImport.update({
-  id: '/register',
-  path: '/register',
-  getParentRoute: () => rootRouteImport,
-} as any)
-const ProtectedRoute2Route = ProtectedRoute2RouteImport.update({
-  id: '/protected-route2',
-  path: '/protected-route2',
-  getParentRoute: () => rootRouteImport,
-} as any)
-const ProtectedRouteRoute = ProtectedRouteRouteImport.update({
-  id: '/protected-route',
-  path: '/protected-route',
-  getParentRoute: () => rootRouteImport,
-} as any)
 const MapDemoRoute = MapDemoRouteImport.update({
   id: '/map-demo',
   path: '/map-demo',
   getParentRoute: () => rootRouteImport,
 } as any)
-const LoginRoute = LoginRouteImport.update({
-  id: '/login',
-  path: '/login',
+const AppRouteRoute = AppRouteRouteImport.update({
+  id: '/app',
+  path: '/app',
   getParentRoute: () => rootRouteImport,
 } as any)
 const IndexRoute = IndexRouteImport.update({
@@ -52,98 +37,91 @@ const DemoTanstackQueryRoute = DemoTanstackQueryRouteImport.update({
   path: '/demo/tanstack-query',
   getParentRoute: () => rootRouteImport,
 } as any)
+const AppMapRoute = AppMapRouteImport.update({
+  id: '/map',
+  path: '/map',
+  getParentRoute: () => AppRouteRoute,
+} as any)
+const authRegisterRoute = authRegisterRouteImport.update({
+  id: '/(auth)/register',
+  path: '/register',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const authLoginRoute = authLoginRouteImport.update({
+  id: '/(auth)/login',
+  path: '/login',
+  getParentRoute: () => rootRouteImport,
+} as any)
 
 export interface FileRoutesByFullPath {
   '/': typeof IndexRoute
-  '/login': typeof LoginRoute
+  '/app': typeof AppRouteRouteWithChildren
   '/map-demo': typeof MapDemoRoute
-  '/protected-route': typeof ProtectedRouteRoute
-  '/protected-route2': typeof ProtectedRoute2Route
-  '/register': typeof RegisterRoute
+  '/login': typeof authLoginRoute
+  '/register': typeof authRegisterRoute
+  '/app/map': typeof AppMapRoute
   '/demo/tanstack-query': typeof DemoTanstackQueryRoute
 }
 export interface FileRoutesByTo {
   '/': typeof IndexRoute
-  '/login': typeof LoginRoute
+  '/app': typeof AppRouteRouteWithChildren
   '/map-demo': typeof MapDemoRoute
-  '/protected-route': typeof ProtectedRouteRoute
-  '/protected-route2': typeof ProtectedRoute2Route
-  '/register': typeof RegisterRoute
+  '/login': typeof authLoginRoute
+  '/register': typeof authRegisterRoute
+  '/app/map': typeof AppMapRoute
   '/demo/tanstack-query': typeof DemoTanstackQueryRoute
 }
 export interface FileRoutesById {
   __root__: typeof rootRouteImport
   '/': typeof IndexRoute
-  '/login': typeof LoginRoute
+  '/app': typeof AppRouteRouteWithChildren
   '/map-demo': typeof MapDemoRoute
-  '/protected-route': typeof ProtectedRouteRoute
-  '/protected-route2': typeof ProtectedRoute2Route
-  '/register': typeof RegisterRoute
+  '/(auth)/login': typeof authLoginRoute
+  '/(auth)/register': typeof authRegisterRoute
+  '/app/map': typeof AppMapRoute
   '/demo/tanstack-query': typeof DemoTanstackQueryRoute
 }
 export interface FileRouteTypes {
   fileRoutesByFullPath: FileRoutesByFullPath
   fullPaths:
     | '/'
-    | '/login'
+    | '/app'
     | '/map-demo'
-    | '/protected-route'
-    | '/protected-route2'
+    | '/login'
     | '/register'
+    | '/app/map'
     | '/demo/tanstack-query'
   fileRoutesByTo: FileRoutesByTo
   to:
     | '/'
-    | '/login'
+    | '/app'
     | '/map-demo'
-    | '/protected-route'
-    | '/protected-route2'
+    | '/login'
     | '/register'
+    | '/app/map'
     | '/demo/tanstack-query'
   id:
     | '__root__'
     | '/'
-    | '/login'
+    | '/app'
     | '/map-demo'
-    | '/protected-route'
-    | '/protected-route2'
-    | '/register'
+    | '/(auth)/login'
+    | '/(auth)/register'
+    | '/app/map'
     | '/demo/tanstack-query'
   fileRoutesById: FileRoutesById
 }
 export interface RootRouteChildren {
   IndexRoute: typeof IndexRoute
-  LoginRoute: typeof LoginRoute
+  AppRouteRoute: typeof AppRouteRouteWithChildren
   MapDemoRoute: typeof MapDemoRoute
-  ProtectedRouteRoute: typeof ProtectedRouteRoute
-  ProtectedRoute2Route: typeof ProtectedRoute2Route
-  RegisterRoute: typeof RegisterRoute
+  authLoginRoute: typeof authLoginRoute
+  authRegisterRoute: typeof authRegisterRoute
   DemoTanstackQueryRoute: typeof DemoTanstackQueryRoute
 }
 
 declare module '@tanstack/react-router' {
   interface FileRoutesByPath {
-    '/register': {
-      id: '/register'
-      path: '/register'
-      fullPath: '/register'
-      preLoaderRoute: typeof RegisterRouteImport
-      parentRoute: typeof rootRouteImport
-    }
-    '/protected-route2': {
-      id: '/protected-route2'
-      path: '/protected-route2'
-      fullPath: '/protected-route2'
-      preLoaderRoute: typeof ProtectedRoute2RouteImport
-      parentRoute: typeof rootRouteImport
-    }
-    '/protected-route': {
-      id: '/protected-route'
-      path: '/protected-route'
-      fullPath: '/protected-route'
-      preLoaderRoute: typeof ProtectedRouteRouteImport
-      parentRoute: typeof rootRouteImport
-    }
     '/map-demo': {
       id: '/map-demo'
       path: '/map-demo'
@@ -151,11 +129,11 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof MapDemoRouteImport
       parentRoute: typeof rootRouteImport
     }
-    '/login': {
-      id: '/login'
-      path: '/login'
-      fullPath: '/login'
-      preLoaderRoute: typeof LoginRouteImport
+    '/app': {
+      id: '/app'
+      path: '/app'
+      fullPath: '/app'
+      preLoaderRoute: typeof AppRouteRouteImport
       parentRoute: typeof rootRouteImport
     }
     '/': {
@@ -172,16 +150,48 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof DemoTanstackQueryRouteImport
       parentRoute: typeof rootRouteImport
     }
+    '/app/map': {
+      id: '/app/map'
+      path: '/map'
+      fullPath: '/app/map'
+      preLoaderRoute: typeof AppMapRouteImport
+      parentRoute: typeof AppRouteRoute
+    }
+    '/(auth)/register': {
+      id: '/(auth)/register'
+      path: '/register'
+      fullPath: '/register'
+      preLoaderRoute: typeof authRegisterRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/(auth)/login': {
+      id: '/(auth)/login'
+      path: '/login'
+      fullPath: '/login'
+      preLoaderRoute: typeof authLoginRouteImport
+      parentRoute: typeof rootRouteImport
+    }
   }
 }
 
+interface AppRouteRouteChildren {
+  AppMapRoute: typeof AppMapRoute
+}
+
+const AppRouteRouteChildren: AppRouteRouteChildren = {
+  AppMapRoute: AppMapRoute,
+}
+
+const AppRouteRouteWithChildren = AppRouteRoute._addFileChildren(
+  AppRouteRouteChildren,
+)
+
 const rootRouteChildren: RootRouteChildren = {
   IndexRoute: IndexRoute,
-  LoginRoute: LoginRoute,
+  AppRouteRoute: AppRouteRouteWithChildren,
   MapDemoRoute: MapDemoRoute,
-  ProtectedRouteRoute: ProtectedRouteRoute,
-  ProtectedRoute2Route: ProtectedRoute2Route,
-  RegisterRoute: RegisterRoute,
+  authLoginRoute: authLoginRoute,
+  authRegisterRoute: authRegisterRoute,
   DemoTanstackQueryRoute: DemoTanstackQueryRoute,
 }
 export const routeTree = rootRouteImport

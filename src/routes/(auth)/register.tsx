@@ -1,7 +1,7 @@
 import { RegisterForm } from "@/components/auth/register/register";
 import { createFileRoute } from "@tanstack/react-router";
 
-export const Route = createFileRoute("/register")({
+export const Route = createFileRoute("/(auth)/register")({
 	component: Register,
 });
 
@@ -10,5 +10,5 @@ function Register() {
 		<div className="h-screen w-full flex items-center justify-center">
 			<RegisterForm />
 		</div>
-	);
+	)
 }
