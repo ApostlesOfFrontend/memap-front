@@ -1,13 +1,14 @@
 import { create } from "zustand";
 
+type Route = [number, number];
+
 interface SelectedRouteState {
-	uuid: string | null;
-	setUuid: (uuid: string) => void;
-	deleteUuid: () => void;
+	route: Route[] | null;
+	setRoute: (route: Route[]) => void;
+	deleteRoute: () => void;
 }
-export const selectedRouteStore = () =>
-	create<SelectedRouteState>((set) => ({
-		uuid: null,
-		setUuid: (uuid) => set(() => ({ uuid: uuid })),
-		deleteUuid: () => set(() => ({ uuid: null })),
-	}));
+export const selectedRouteStore = create<SelectedRouteState>((set) => ({
+	route: null,
+	setRoute: (route) => set(() => ({ route: route })),
+	deleteRoute: () => set(() => ({ route: null })),
+}));
