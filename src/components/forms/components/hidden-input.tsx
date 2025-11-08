@@ -1,15 +1,14 @@
-import { useStore } from "@tanstack/react-form";
 import { Eye, EyeOff } from "lucide-react";
 import { type Dispatch, type SetStateAction, useState } from "react";
-import { Button } from "../ui/button";
-import { Input as ShadInput } from "../ui/input";
-import { Label } from "../ui/label";
-import { useFieldContext } from "./context";
+import { Button } from "../../ui/button";
+import { Input as ShadInput } from "../../ui/input";
+import { Label } from "../../ui/label";
+import { useFieldContext } from "../context";
+import { Description } from "./general/description";
+import { FormError } from "./general/error";
+import type { TextInputBaseProps } from "./types/text-input";
 
-export interface InputProps {
-	label: string;
-	description?: string;
-	placeholder?: string;
+export interface HiddenInputProps extends TextInputBaseProps {
 	show?: boolean;
 	setShow?: Dispatch<SetStateAction<boolean>>;
 }
@@ -20,10 +19,9 @@ export const HiddenInput = ({
 	placeholder,
 	show,
 	setShow,
-}: InputProps) => {
+}: HiddenInputProps) => {
 	const field = useFieldContext<string>();
 	const [internalShow, setInternalShow] = useState<boolean>(false);
-	const errors = useStore(field.store, (state) => state.meta.errors);
 
 	const isVisible = show || internalShow;
 
@@ -59,10 +57,8 @@ export const HiddenInput = ({
 					{isVisible ? <EyeOff /> : <Eye />}
 				</Button>
 			</div>
-			{description && <div>{placeholder}</div>}
-			{errors.length > 0 && (
-				<div className="text-red-500 text-sm">{errors[0].message}</div>
-			)}
+			<Description description={description} />
+			<FormError />
 		</div>
 	);
 };
