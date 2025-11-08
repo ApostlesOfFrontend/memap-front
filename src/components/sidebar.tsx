@@ -8,6 +8,8 @@ import {
 	SidebarMenuItem,
 } from "@/components/ui/sidebar";
 import { selectedRouteStore } from "@/state/selected-route";
+import { tripDraftStore } from "@/state/trip-draft";
+import { toast } from "sonner";
 
 const items = [
 	{
@@ -110,6 +112,8 @@ const items = [
 
 export function AppSidebar() {
 	const { setRoute } = selectedRouteStore();
+	const { isDrawingMode } = tripDraftStore();
+
 	return (
 		<Sidebar collapsible="icon" variant="floating">
 			<SidebarContent>
@@ -120,7 +124,13 @@ export function AppSidebar() {
 								<SidebarMenuItem key={item.id}>
 									<SidebarMenuButton
 										asChild
-										onClick={() => setRoute(item.route)}
+										onClick={() => {
+											if (!isDrawingMode) {
+												setRoute(item.route);
+											} else {
+												toast.warning("Exit adding new trip first!");
+											}
+										}}
 									>
 										{/**TODO: Fix types */}
 										<span>{item.name}</span>
