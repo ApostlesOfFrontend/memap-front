@@ -1,5 +1,6 @@
 import { tripDraftStore } from "@/state/trip-draft";
 import { RotateCcw, Save, X } from "lucide-react";
+import { Geocoder } from "../map/geocoder";
 import { Button } from "../ui/button";
 import {
 	Card,
@@ -25,17 +26,23 @@ export const NewTrip = () => {
 					<CardDescription>Select places where you have been</CardDescription>
 				</CardHeader>
 				<CardContent>
-					<div className="flex flex-col gap-2 max-h-[400px] overflow-y-auto">
-						{draftRoute.map((route, index) => (
-							<div
-								key={`${route[0]}-${route[1]}-${index}`}
-								className="p-2 bg-muted rounded"
-							>
-								<span className="text-sm font-mono">
-									{route[0].toFixed(3)}, {route[1].toFixed(3)}
-								</span>
-							</div>
-						))}
+					<div className="flex flex-col gap-4">
+						<Geocoder />
+						<div className="flex flex-col gap-2 max-h-[400px] overflow-y-auto">
+							{draftRoute.map((route, index) => {
+								const { location, name } = route;
+								return (
+									<div
+										key={`${location[0]}-${location[1]}-${index}`}
+										className="p-2 bg-muted rounded"
+									>
+										<span className="text-sm font-mono">
+											{name ? name : `${location[0]}, ${location[1]}`}
+										</span>
+									</div>
+								);
+							})}
+						</div>
 					</div>
 				</CardContent>
 				<CardFooter className="flex gap-2 justify-end">

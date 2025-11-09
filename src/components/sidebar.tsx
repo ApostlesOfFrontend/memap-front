@@ -126,13 +126,13 @@ export function AppSidebar() {
 										asChild
 										onClick={() => {
 											if (!isDrawingMode) {
+												//TODO - fix types
 												setRoute(item.route);
 											} else {
 												toast.warning("Exit adding new trip first!");
 											}
 										}}
 									>
-										{/**TODO: Fix types */}
 										<span>{item.name}</span>
 									</SidebarMenuButton>
 								</SidebarMenuItem>

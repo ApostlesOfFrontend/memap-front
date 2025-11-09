@@ -6,7 +6,7 @@ import { Tooltip, TooltipContent, TooltipTrigger } from "../ui/tooltip";
 
 export const NewTripTrigger = () => {
 	const { deleteRoute } = selectedRouteStore();
-	const { isDrawingMode, toggleDrawingMode } = tripDraftStore();
+	const { toggleDrawingMode } = tripDraftStore();
 	return (
 		<Tooltip>
 			<TooltipTrigger asChild>

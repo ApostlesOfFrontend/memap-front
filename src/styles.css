@@ -18,6 +18,15 @@ code {
 		monospace;
 }
 
+.mapboxgl-ctrl-geocoder {
+	width: 100% !important;
+	max-width: none !important;
+}
+
+.mapboxgl-ctrl-geocoder input {
+	width: 100% !important;
+}
+
 :root {
 	--radius: 0.625rem;
 	--background: oklch(1 0 0);
