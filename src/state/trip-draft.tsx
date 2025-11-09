@@ -3,11 +3,17 @@ import { create } from "zustand";
 //TODO: Refactor types
 type RoutePoint = [number, number];
 
+interface DraftRoutePoint {
+	name?: string | null;
+	location: RoutePoint;
+}
+
 interface TripDraftState {
 	isDrawingMode: boolean;
-	draftRoute: RoutePoint[];
+	draftRoute: DraftRoutePoint[];
 	toggleDrawingMode: () => void;
 	addPoint: (point: RoutePoint) => void;
+	addFullPoint: (point: DraftRoutePoint) => void;
 	removePoint: (index: number) => void;
 	clearDraft: () => void;
 }
@@ -19,7 +25,7 @@ export const tripDraftStore = create<TripDraftState>((set) => ({
 		set((state) => ({ isDrawingMode: !state.isDrawingMode, draftRoute: [] })),
 	addPoint: (point) =>
 		set((state) => ({
-			draftRoute: [...state.draftRoute, point],
+			draftRoute: [...state.draftRoute, { name: null, location: point }],
 		})),
 	removePoint: (index) =>
 		set((state) => ({
@@ -29,4 +35,6 @@ export const tripDraftStore = create<TripDraftState>((set) => ({
 		set(() => ({
 			draftRoute: [],
 		})),
+	addFullPoint: (point) =>
+		set((state) => ({ draftRoute: [...state.draftRoute, point] })),
 }));

@@ -14,6 +14,7 @@
     "check": "biome check"
   },
   "dependencies": {
+    "@mapbox/mapbox-gl-geocoder": "^5.1.2",
     "@radix-ui/react-dialog": "^1.1.15",
     "@radix-ui/react-label": "^2.1.7",
     "@radix-ui/react-popover": "^1.1.15",
@@ -48,6 +49,7 @@
     "@biomejs/biome": "1.9.4",
     "@testing-library/dom": "^10.4.0",
     "@testing-library/react": "^16.2.0",
+    "@types/mapbox__mapbox-gl-geocoder": "^5.1.0",
     "@types/mapbox-gl": "^3.4.1",
     "@types/node": "^24.1.0",
     "@types/react": "^19.0.8",

@@ -50,7 +50,6 @@ export function DatePicker({ label, description }: DatePickerProps) {
 						selected={date}
 						captionLayout="dropdown"
 						onSelect={(date) => {
-							console.log(date);
 							field.handleChange(date);
 							setOpen(false);
 						}}

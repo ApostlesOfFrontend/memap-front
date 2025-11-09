@@ -5,6 +5,8 @@ import { type RefObject, useEffect, useMemo } from "react";
 export const useDrawingMode = (map: RefObject<mapboxgl.Map | null>) => {
 	const { isDrawingMode, draftRoute, addPoint, removePoint } = tripDraftStore();
 
+	const route = draftRoute.map((point) => point.location);
+
 	// Transform draft route to GeoJSON format for rendering
 	const draftRouteGeoJSON: FeatureCollection<LineString> = useMemo(() => {
 		if (draftRoute.length === 0) {
@@ -21,13 +23,13 @@ export const useDrawingMode = (map: RefObject<mapboxgl.Map | null>) => {
 					type: "Feature",
 					geometry: {
 						type: "LineString",
-						coordinates: draftRoute,
+						coordinates: route,
 					},
 					properties: {},
 				},
 			],
 		};
-	}, [draftRoute]);
+	}, [draftRoute, route]);
 
 	// Initialize drawing layers on map load
 	useEffect(() => {
@@ -153,7 +155,7 @@ export const useDrawingMode = (map: RefObject<mapboxgl.Map | null>) => {
 			if (markersSource) {
 				markersSource.setData({
 					type: "FeatureCollection",
-					features: draftRoute.map((coord, index) => ({
+					features: route.map((coord, index) => ({
 						type: "Feature" as const,
 						geometry: { type: "Point" as const, coordinates: coord },
 						properties: { index },
@@ -167,5 +169,5 @@ export const useDrawingMode = (map: RefObject<mapboxgl.Map | null>) => {
 		} else {
 			map.current.once("load", update);
 		}
-	}, [map, draftRouteGeoJSON, draftRoute]);
+	}, [map, draftRouteGeoJSON, route]);
 };

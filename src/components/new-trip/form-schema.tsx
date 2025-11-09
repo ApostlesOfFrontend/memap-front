@@ -11,7 +11,12 @@ export const newTripSchema = z.object({
 	),
 	description: z.string().min(2, "Provide description for your trip"),
 	route: z
-		.array(z.tuple([z.number(), z.number()]))
+		.array(
+			z.object({
+				name: z.string().optional().nullable(),
+				location: z.tuple([z.number(), z.number()]),
+			}),
+		)
 		.nonempty("You need to select trip points"),
 });
 
