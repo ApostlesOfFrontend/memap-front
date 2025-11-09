@@ -1,3 +1,4 @@
+import { useCreateTripMutation } from "@/api/trip/hooks/create";
 import { tripDraftStore } from "@/state/trip-draft";
 import { type ReactNode, useState } from "react";
 import { toast } from "sonner";
@@ -18,6 +19,7 @@ import { type NewTripFormSchema, newTripSchema } from "./form-schema";
 export const SaveTripDialog = ({ children }: { children: ReactNode }) => {
 	const { draftRoute } = tripDraftStore();
 	const [opened, setOpened] = useState(false);
+	const { mutate } = useCreateTripMutation();
 
 	const form = useAppForm({
 		defaultValues: {
@@ -39,6 +41,7 @@ export const SaveTripDialog = ({ children }: { children: ReactNode }) => {
 		},
 		onSubmit: ({ value }) => {
 			console.log(value);
+			mutate(value);
 		},
 	});
 
