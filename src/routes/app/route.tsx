@@ -1,5 +1,5 @@
-import { AppSidebar } from "@/components/sidebar";
 import { SidebarProvider } from "@/components/ui/sidebar";
+import { AppSidebar } from "@/components/ui/sidebar/sidebar";
 import { isAuthenticatedGuard } from "@/guards/is-authenticated";
 import { Outlet, createFileRoute } from "@tanstack/react-router";
 

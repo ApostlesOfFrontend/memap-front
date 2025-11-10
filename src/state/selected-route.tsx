@@ -1,6 +1,6 @@
 import { create } from "zustand";
 
-type Route = [number, number];
+export type Route = [number, number];
 
 interface SelectedRouteState {
 	route: Route[] | null;
