@@ -116,7 +116,10 @@ export const useDrawingMode = (map: RefObject<mapboxgl.Map | null>) => {
 					removePoint(index);
 				}
 			} else {
-				// Clicked on empty space - add a new point
+				/**
+				 * Clicked on empty space - add a new point
+				 * [longitude, latitude]
+				 * */
 				const coordinates: [number, number] = [e.lngLat.lng, e.lngLat.lat];
 				addPoint(coordinates);
 			}

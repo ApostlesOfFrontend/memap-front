@@ -3,7 +3,7 @@ import { create } from "zustand";
 //TODO: Refactor types
 type RoutePoint = [number, number];
 
-interface DraftRoutePoint {
+export interface DraftRoutePoint {
 	name?: string | null;
 	location: RoutePoint;
 }

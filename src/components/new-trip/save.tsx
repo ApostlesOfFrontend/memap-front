@@ -14,7 +14,7 @@ import {
 	DialogTitle,
 	DialogTrigger,
 } from "../ui/dialog";
-import { type NewTripFormSchema, newTripSchema } from "./form-schema";
+import { newTripSchema } from "./form-schema";
 
 export const SaveTripDialog = ({ children }: { children: ReactNode }) => {
 	const { draftRoute } = tripDraftStore();
@@ -26,16 +26,8 @@ export const SaveTripDialog = ({ children }: { children: ReactNode }) => {
 			title: "",
 			description: "",
 			route: draftRoute,
-			dates: undefined,
-			/**
-			 * TODO: find better solution than following `as Partial`
-			 * Implemented due to type mismatch between schema and default values where dates are undefined
-			 * I want to keep dates as undefined to initially show placeholder simultaneously
-			 * keeping dates in zod required for validation purposes.
-			 * When dates are deleted from default values then <form.AppField> name property
-			 * does not recognize dates field.
-			 */
-		} as Partial<NewTripFormSchema>,
+			dates: { to: new Date(), from: new Date() },
+		},
 		validators: {
 			onSubmit: newTripSchema,
 		},
