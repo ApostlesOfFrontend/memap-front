@@ -17,9 +17,16 @@ import {
 import { newTripSchema } from "./form-schema";
 
 export const SaveTripDialog = ({ children }: { children: ReactNode }) => {
-	const { draftRoute } = tripDraftStore();
+	const { draftRoute, toggleDrawingMode } = tripDraftStore();
 	const [opened, setOpened] = useState(false);
-	const { mutate } = useCreateTripMutation();
+
+	const onSuccess = () => {
+		//TODO: would be nice if you were taken to the trip
+		setOpened(false);
+		toggleDrawingMode();
+	};
+
+	const { mutate } = useCreateTripMutation(onSuccess);
 
 	const form = useAppForm({
 		defaultValues: {
@@ -32,7 +39,6 @@ export const SaveTripDialog = ({ children }: { children: ReactNode }) => {
 			onSubmit: newTripSchema,
 		},
 		onSubmit: ({ value }) => {
-			console.log(value);
 			mutate(value);
 		},
 	});

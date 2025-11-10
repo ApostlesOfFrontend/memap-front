@@ -2,7 +2,7 @@ const API = import.meta.env.VITE_API_BASE_URL;
 
 export const fetcher = async <T>(
 	endpoint: string,
-	body: unknown,
+	body?: unknown,
 	init?: RequestInit,
 ): Promise<T> => {
 	if (!API) throw new Error("API URL not set");
@@ -12,7 +12,7 @@ export const fetcher = async <T>(
 	const response = await fetch(url, {
 		...init,
 		credentials: "include",
-		body: JSON.stringify(body),
+		...(body ? { body: JSON.stringify(body) } : {}), // If body exists, add to request
 	});
 
 	const reponseBody = await response.json();
