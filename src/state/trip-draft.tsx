@@ -15,6 +15,7 @@ interface TripDraftState {
 	addPoint: (point: RoutePoint) => void;
 	addFullPoint: (point: DraftRoutePoint) => void;
 	removePoint: (index: number) => void;
+	setDraftRoute: (next: DraftRoutePoint[]) => void;
 	clearDraft: () => void;
 }
 
@@ -30,6 +31,10 @@ export const tripDraftStore = create<TripDraftState>((set) => ({
 	removePoint: (index) =>
 		set((state) => ({
 			draftRoute: state.draftRoute.filter((_, i) => i !== index),
+		})),
+	setDraftRoute: (next) =>
+		set(() => ({
+			draftRoute: next,
 		})),
 	clearDraft: () =>
 		set(() => ({
