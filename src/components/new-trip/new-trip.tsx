@@ -13,13 +13,18 @@ import {
 import { SaveTripDialog } from "./save";
 
 export const NewTrip = () => {
-	const { isDrawingMode, draftRoute, clearDraft, toggleDrawingMode } =
-		tripDraftStore();
+	const {
+		isDrawingMode,
+		draftRoute,
+		clearDraft,
+		toggleDrawingMode,
+		removePoint,
+	} = tripDraftStore();
 
 	if (!isDrawingMode) return;
 
 	return (
-		<div className="absolute top-2 left-2 z-50 min-w-2xs max-w-md">
+		<div className="absolute top-2 left-2 z-50 min-w-xs">
 			<Card>
 				<CardHeader>
 					<CardTitle>Route Points</CardTitle>
@@ -28,17 +33,29 @@ export const NewTrip = () => {
 				<CardContent>
 					<div className="flex flex-col gap-4">
 						<Geocoder />
-						<div className="flex flex-col gap-2 max-h-[400px] overflow-y-auto">
+						<div className="flex flex-col gap-2 max-h-[400px] ">
 							{draftRoute.map((route, index) => {
 								const { location, name } = route;
 								return (
 									<div
 										key={`${location[0]}-${location[1]}-${index}`}
-										className="p-2 bg-muted rounded"
+										className="flex p-2 bg-muted rounded-md items-center justify-between"
 									>
-										<span className="text-sm font-mono">
-											{name ? name : `${location[0]}, ${location[1]}`}
-										</span>
+										<div className="truncate max-w-52">
+											<span className="text-sm font-mono">
+												{name
+													? name
+													: `${location[1].toFixed(3)}, ${location[0].toFixed(3)}`}
+											</span>
+										</div>
+										<Button
+											size="icon"
+											variant="ghost"
+											className="hover:bg-white/5"
+											onClick={() => removePoint(index)}
+										>
+											<X />
+										</Button>
 									</div>
 								);
 							})}
