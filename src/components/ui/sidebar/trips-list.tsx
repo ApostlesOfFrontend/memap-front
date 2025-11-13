@@ -10,8 +10,11 @@ import { toast } from "sonner";
 import { Button } from "../button";
 import { Card, CardContent, CardHeader, CardTitle } from "../card";
 import { ErrorState } from "../network/error";
-import Loader from "../network/loading";
-import { SidebarMenuButton, SidebarMenuItem } from "../sidebar";
+import {
+	SidebarMenuButton,
+	SidebarMenuItem,
+	SidebarMenuSkeleton,
+} from "../sidebar";
 
 export const SidebarTripsList = () => {
 	const { setRoute } = selectedRouteStore();
@@ -22,7 +25,7 @@ export const SidebarTripsList = () => {
 		parseAsInteger,
 	);
 
-	if (isPending) return <Loader />;
+	if (isPending) return <SidebarTripsListSkeleton />;
 
 	if (error) return <ErrorState onRetry={refetch} />;
 
@@ -71,6 +74,15 @@ export const SidebarTripsList = () => {
 			>
 				<span>{item.name}</span>
 			</SidebarMenuButton>
+		</SidebarMenuItem>
+	));
+};
+
+export const SidebarTripsListSkeleton = () => {
+	return Array.from({ length: 5 }).map((_, index) => (
+		// biome-ignore lint/suspicious/noArrayIndexKey: only for short term display
+		<SidebarMenuItem key={index}>
+			<SidebarMenuSkeleton />
 		</SidebarMenuItem>
 	));
 };
