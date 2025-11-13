@@ -1,6 +1,9 @@
 import { useRef } from "react";
 import "mapbox-gl/dist/mapbox-gl.css";
 import { NewTrip } from "@/components/new-trip/new-trip";
+import { QueryKeys } from "@/lib/nuqs-query-keys";
+import { parseAsInteger, useQueryState } from "nuqs";
+import { TripDetails } from "../trip-details/details";
 import { useDrawingMode } from "./hooks/use-drawing-mode";
 import { useMapInit } from "./hooks/use-initialize";
 import { useRenderRoute } from "./hooks/use-render-route";
@@ -8,6 +11,7 @@ import { useRenderRoute } from "./hooks/use-render-route";
 export const InteractiveMap = () => {
 	const mapContainer = useRef<HTMLDivElement | null>(null);
 	const map = useRef<mapboxgl.Map | null>(null);
+	const [selectedId] = useQueryState(QueryKeys.SelectedTrip, parseAsInteger);
 
 	useMapInit(mapContainer, map);
 
@@ -23,6 +27,7 @@ export const InteractiveMap = () => {
 				className="w-full h-full rounded-lg"
 			/>
 			<NewTrip />
+			{selectedId && <TripDetails tripId={selectedId} />}
 		</div>
 	);
 };
