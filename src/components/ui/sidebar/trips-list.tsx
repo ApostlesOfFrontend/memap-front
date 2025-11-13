@@ -1,8 +1,11 @@
 import { useTripsList } from "@/api/trip/hooks/list";
 import { transformPointsToRoute } from "@/api/trip/util/transform-points";
+import { QueryKeys } from "@/lib/nuqs-query-keys";
+import { cn } from "@/lib/utils";
 import { selectedRouteStore } from "@/state/selected-route";
 import { tripDraftStore } from "@/state/trip-draft";
 import { PlusCircle } from "lucide-react";
+import { parseAsInteger, useQueryState } from "nuqs";
 import { toast } from "sonner";
 import { Button } from "../button";
 import { Card, CardContent, CardHeader, CardTitle } from "../card";
@@ -14,6 +17,10 @@ export const SidebarTripsList = () => {
 	const { setRoute } = selectedRouteStore();
 	const { isDrawingMode, toggleDrawingMode } = tripDraftStore();
 	const { data, error, isPending, refetch } = useTripsList();
+	const [selectedId, setSelectedId] = useQueryState(
+		QueryKeys.SelectedTrip,
+		parseAsInteger,
+	);
 
 	if (isPending) return <Loader />;
 
@@ -47,12 +54,16 @@ export const SidebarTripsList = () => {
 		);
 
 	return data?.map((item) => (
-		<SidebarMenuItem key={item.id}>
+		<SidebarMenuItem
+			key={item.id}
+			className={cn({ "bg-sidebar-accent rounded-md": item.id === selectedId })}
+		>
 			<SidebarMenuButton
 				asChild
 				onClick={() => {
 					if (!isDrawingMode) {
 						setRoute(transformPointsToRoute(item.points));
+						setSelectedId(item.id);
 					} else {
 						toast.warning("Exit adding new trip first!");
 					}

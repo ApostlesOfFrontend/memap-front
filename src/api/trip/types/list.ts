@@ -1,3 +1,5 @@
+import type { TripBaseI } from "./get";
+
 export interface POI {
 	id: number;
 	tripId: number;
@@ -6,14 +8,7 @@ export interface POI {
 	lng: number;
 }
 
-export interface Trip {
-	id: number;
-	name: string;
-	description: string;
-	dateFrom: string;
-	dateTo: string;
-	createdAt: string;
-	updatedAt: string;
+export interface Trip extends TripBaseI {
 	points: Array<POI>;
 }
 
