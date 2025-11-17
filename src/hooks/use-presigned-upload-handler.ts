@@ -1,15 +1,27 @@
+import { useConfirmUpload } from "@/api/upload/hooks/confirm-upload";
 import { useGetPresignedUploadUrl } from "@/api/upload/hooks/get-presigned-url";
 
 export const usePresignedUploadHandler = () => {
-	const { mutateAsync } = useGetPresignedUploadUrl();
-	return async (file: File) => {
-		const resp = await mutateAsync();
+	const { mutateAsync: getPresignedUrl } = useGetPresignedUploadUrl();
+	const { mutateAsync: confirmUpload } = useConfirmUpload();
+	return async (file: File, tripId: number) => {
+		const resp = await getPresignedUrl({
+			name: file.name,
+			size: file.size,
+			type: file.type,
+			tripId,
+		});
 
-		console.log(resp);
 		const uploadResponse = await fetch(resp.signedUrl, {
 			method: "PUT",
 			body: file,
 		});
 		console.log(uploadResponse);
+
+		const confirmationResponse = await confirmUpload({
+			tripId,
+			imageUuid: resp.uuid,
+		});
+		console.log(confirmationResponse);
 	};
 };

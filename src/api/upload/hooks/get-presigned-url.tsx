@@ -1,13 +1,14 @@
 import { fetcher } from "@/api/util/fetch";
 import { useMutation } from "@tanstack/react-query";
-import type { PresignedURLResponse } from "../types/get-presigned-url";
+import type {
+	PresignedURLDTO,
+	PresignedURLResponse,
+} from "../types/get-presigned-url";
 
 export const useGetPresignedUploadUrl = () =>
-	useMutation<PresignedURLResponse>({
-		mutationFn: () =>
-			fetcher<PresignedURLResponse>(
-				"/api/upload/single/init",
-				{},
-				{ method: "POST" },
-			),
+	useMutation<PresignedURLResponse, Error, PresignedURLDTO, void>({
+		mutationFn: (imageData) =>
+			fetcher<PresignedURLResponse>("/api/upload/single/init", imageData, {
+				method: "POST",
+			}),
 	});
