@@ -1,3 +1,5 @@
+import type { ImagesList } from "@/api/images/list";
+
 export interface TripBaseI {
 	createdAt: string;
 	dateFrom: string;
@@ -6,4 +8,5 @@ export interface TripBaseI {
 	id: number;
 	name: string;
 	updatedAt: string;
+	images: ImagesList;
 }

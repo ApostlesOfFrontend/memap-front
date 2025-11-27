@@ -4,6 +4,7 @@ import { useGetPresignedUploadUrl } from "@/api/upload/hooks/get-presigned-url";
 export const usePresignedUploadHandler = () => {
 	const { mutateAsync: getPresignedUrl } = useGetPresignedUploadUrl();
 	const { mutateAsync: confirmUpload } = useConfirmUpload();
+
 	return async (file: File, tripId: number) => {
 		const resp = await getPresignedUrl({
 			name: file.name,
@@ -16,12 +17,14 @@ export const usePresignedUploadHandler = () => {
 			method: "PUT",
 			body: file,
 		});
-		console.log(uploadResponse);
+
+		if (!uploadResponse.ok)
+			throw new Error("Failed attepmt to add file to storage");
 
 		const confirmationResponse = await confirmUpload({
 			tripId,
 			imageUuid: resp.uuid,
 		});
-		console.log(confirmationResponse);
+		return confirmationResponse.id;
 	};
 };

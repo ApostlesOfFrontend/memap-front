@@ -5,7 +5,7 @@ export const ImageThumbnail = ({ id }: { id: string }) => {
 		<img
 			src={`${API}/api/images/${id}?type=thumbnail`}
 			alt=""
-			className="object-cover h-48 w-64 rounded-lg cursor-pointer"
+			className="object-cover h-48 w-full rounded-lg cursor-pointer"
 		/>
 	);
 };
