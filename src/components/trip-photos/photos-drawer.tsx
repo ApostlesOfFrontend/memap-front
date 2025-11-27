@@ -1,9 +1,6 @@
-import { usePresignedUploadHandler } from "@/hooks/use-presigned-upload-handler";
-import { QueryKeys } from "@/lib/nuqs-query-keys";
-import { parseAsInteger, useQueryState } from "nuqs";
-import { type ReactNode, useState } from "react";
-import { toast } from "sonner";
-import { Button } from "../ui/button";
+import { useTripDetails } from "@/api/trip/hooks/get";
+import type { ReactNode } from "react";
+import { ImageThumbnail } from "../image/thumbnail";
 import {
 	Drawer,
 	DrawerContent,
@@ -12,13 +9,11 @@ import {
 	DrawerTitle,
 	DrawerTrigger,
 } from "../ui/drawer";
+import { ScrollArea } from "../ui/scroll-area";
+import { UploadDialog } from "./upload";
 
 export const PhotosDrawer = ({ children }: { children: ReactNode }) => {
-	const [file, setFile] = useState<File | null>(null);
-	const useUpload = usePresignedUploadHandler();
-	const [tripId] = useQueryState(QueryKeys.SelectedTrip, parseAsInteger);
-
-	console.log(file);
+	const { data } = useTripDetails(10);
 
 	return (
 		<Drawer>
@@ -27,20 +22,14 @@ export const PhotosDrawer = ({ children }: { children: ReactNode }) => {
 				<DrawerHeader>
 					<DrawerTitle>Photos</DrawerTitle>
 					<DrawerDescription>You can keep your photos here</DrawerDescription>
-					<div className="h-96">
-						<input type="file" onChange={(e) => setFile(e.target.files[0])} />
-						<Button
-							onClick={() => {
-								if (!file || !tripId) {
-									toast.error("Something went wrong when adding a file");
-									return;
-								}
-								useUpload(file, tripId);
-							}}
-						>
-							Upload
-						</Button>
-					</div>
+					<ScrollArea className="h-96">
+						<div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 xl:grid-cols-5 2xl:grid-cols-6 gap-2 max-w-7xl mx-auto">
+							{data.images.map((image) => (
+								<ImageThumbnail id={image.id} key={image.id} />
+							))}
+							<UploadDialog />
+						</div>
+					</ScrollArea>
 				</DrawerHeader>
 			</DrawerContent>
 		</Drawer>
