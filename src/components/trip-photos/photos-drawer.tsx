@@ -1,6 +1,8 @@
 import { useTripDetails } from "@/api/trip/hooks/get";
 import { usePresignedUploadHandler } from "@/hooks/use-presigned-upload-handler";
+import { QueryKeys } from "@/lib/nuqs-query-keys";
 import { Upload } from "lucide-react";
+import { parseAsInteger, parseAsString, useQueryState } from "nuqs";
 import { type ReactNode, useEffect, useState } from "react";
 import Dropzone from "react-dropzone";
 import { PendingImage } from "../image/pending-upload";
@@ -27,12 +29,19 @@ export type PendingFiles = {
 	id?: string;
 };
 
-export const PhotosDrawer = ({ children }: { children: ReactNode }) => {
-	const { data } = useTripDetails(10);
+export const PhotosDrawer = ({
+	children,
+	tripId,
+}: { children: ReactNode; tripId: number }) => {
+	const { data } = useTripDetails(tripId);
 	const [files, setFiles] = useState<PendingFiles[]>([]);
 	const fileUpload = usePresignedUploadHandler();
 
 	//TODO: add function to remove uploaded pending files after data refetch
+	//TODO: add guard to not allow items with name that already exists
+	//TODO: add functionality to preview full size photos
+	//TODO: add functionality to delete photos
+	//TODO: add onDropReject handler and inform user about rejection
 
 	// Clean-up after displaying preview of files pending upload
 	useEffect(() => {
@@ -62,7 +71,7 @@ export const PhotosDrawer = ({ children }: { children: ReactNode }) => {
 			if (file.status === "awaiting") {
 				try {
 					updateFileStatus(idx + files.length, "uploading");
-					const id = await fileUpload(file.file, 10);
+					const id = await fileUpload(file.file, tripId);
 					updateFileStatus(idx + files.length, "completed", id);
 				} catch (e) {
 					updateFileStatus(idx + files.length, "upload_error");

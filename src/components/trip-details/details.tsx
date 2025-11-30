@@ -65,7 +65,7 @@ export const TripDetails = ({ tripId }: { tripId: number }) => {
 				>
 					<X />
 				</Button>
-				<PhotosDrawer>
+				<PhotosDrawer tripId={tripId}>
 					<Button>Photos</Button>
 				</PhotosDrawer>
 			</CardFooter>
