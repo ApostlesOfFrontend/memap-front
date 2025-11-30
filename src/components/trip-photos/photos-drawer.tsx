@@ -1,10 +1,9 @@
 import { useTripDetails } from "@/api/trip/hooks/get";
 import { usePresignedUploadHandler } from "@/hooks/use-presigned-upload-handler";
-import { QueryKeys } from "@/lib/nuqs-query-keys";
 import { Upload } from "lucide-react";
-import { parseAsInteger, parseAsString, useQueryState } from "nuqs";
 import { type ReactNode, useEffect, useState } from "react";
 import Dropzone from "react-dropzone";
+import { toast } from "sonner";
 import { PendingImage } from "../image/pending-upload";
 import { ImageThumbnail } from "../image/thumbnail";
 import {
@@ -40,7 +39,6 @@ export const PhotosDrawer = ({
 	//TODO: add function to remove uploaded pending files after data refetch
 	//TODO: add guard to not allow items with name that already exists
 	//TODO: add functionality to preview full size photos
-	//TODO: add functionality to delete photos
 	//TODO: add onDropReject handler and inform user about rejection
 
 	// Clean-up after displaying preview of files pending upload
@@ -92,7 +90,7 @@ export const PhotosDrawer = ({
 							{data?.images.map((image) => (
 								<ImageThumbnail id={image.id} key={image.id} />
 							))}
-							{files.map(({ status, file }, idx) => (
+							{files.map(({ status, file }) => (
 								<PendingImage
 									src={URL.createObjectURL(file)}
 									key={file.name}
@@ -111,7 +109,10 @@ export const PhotosDrawer = ({
 									}}
 									accept={{ "image/*": [".png", ".jpeg"] }}
 									onDropRejected={(rejections) => {
-										console.log(rejections);
+										toast.error("Some files were rejected", {
+											description: `Files: ${rejections.map((rej) => rej.file.name).join(", ")} were rejected`,
+											duration: 7000,
+										});
 									}}
 								>
 									{({ getRootProps, getInputProps }) => (
