@@ -6,6 +6,7 @@ import { selectedRouteStore } from "@/state/selected-route";
 import { tripDraftStore } from "@/state/trip-draft";
 import { PlusCircle } from "lucide-react";
 import { parseAsInteger, useQueryState } from "nuqs";
+import { useEffect } from "react";
 import { toast } from "sonner";
 import { Button } from "../button";
 import { Card, CardContent, CardHeader, CardTitle } from "../card";
@@ -24,6 +25,12 @@ export const SidebarTripsList = () => {
 		QueryKeys.SelectedTrip,
 		parseAsInteger,
 	);
+
+	// set route data after page refresh
+	useEffect(() => {
+		const found = data?.find(({ id }) => id === selectedId);
+		if (found) setRoute(transformPointsToRoute(found.points));
+	}, [data, selectedId, setRoute]);
 
 	if (isPending) return <SidebarTripsListSkeleton />;
 
