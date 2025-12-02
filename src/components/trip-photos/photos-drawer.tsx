@@ -29,6 +29,7 @@ export type PendingFiles = {
 	status: UploadStatuses;
 	file: File;
 	id?: string;
+	objectUrl: string;
 };
 
 export const PhotosDrawer = ({
@@ -43,9 +44,7 @@ export const PhotosDrawer = ({
 	useEffect(() => {
 		return () => {
 			// biome-ignore lint/complexity/noForEach: simple logic
-			files.forEach(({ file }) =>
-				URL.revokeObjectURL(URL.createObjectURL(file)),
-			);
+			files.forEach(({ objectUrl }) => URL.revokeObjectURL(objectUrl));
 		};
 	}, [files]);
 
@@ -89,8 +88,13 @@ export const PhotosDrawer = ({
 					</DrawerDescription>
 					<ScrollArea className="h-96">
 						<div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 xl:grid-cols-5 2xl:grid-cols-6 gap-2 max-w-7xl mx-auto">
-							{data?.images.map((image) => (
-								<ImageThumbnail id={image.id} key={image.id} />
+							{data?.images.map((image, index) => (
+								<ImageThumbnail
+									id={image.id}
+									key={image.id}
+									images={data.images}
+									index={index}
+								/>
 							))}
 							{files.map(({ status, file }) => (
 								<PendingImage
@@ -133,6 +137,7 @@ export const PhotosDrawer = ({
 										const f: PendingFiles[] = allowedFiles.map((file) => ({
 											file,
 											status: "awaiting",
+											objectUrl: URL.createObjectURL(file),
 										}));
 										setFiles((state) => [...state, ...f]);
 										void handleUpload(f);
