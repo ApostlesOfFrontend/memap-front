@@ -16,6 +16,9 @@ import {
 } from "../ui/drawer";
 import { ScrollArea } from "../ui/scroll-area";
 
+const MAX_PHOTOS_PER_TRIP = 20;
+const MAX_FILE_SIZE_MB = 10;
+
 export type UploadStatuses =
 	| "awaiting"
 	| "uploading"
@@ -35,11 +38,6 @@ export const PhotosDrawer = ({
 	const { data } = useTripDetails(tripId);
 	const [files, setFiles] = useState<PendingFiles[]>([]);
 	const fileUpload = usePresignedUploadHandler();
-
-	//TODO: add function to remove uploaded pending files after data refetch
-	//TODO: add guard to not allow items with name that already exists
-	//TODO: add functionality to preview full size photos
-	//TODO: add onDropReject handler and inform user about rejection
 
 	// Clean-up after displaying preview of files pending upload
 	useEffect(() => {
@@ -84,7 +82,11 @@ export const PhotosDrawer = ({
 			<DrawerContent>
 				<DrawerHeader>
 					<DrawerTitle>Photos</DrawerTitle>
-					<DrawerDescription>You can keep your photos here</DrawerDescription>
+					<DrawerDescription>
+						You can keep your photos here. You can upload up to{" "}
+						{MAX_PHOTOS_PER_TRIP} photos per trip (PNG or JPEG, up to{" "}
+						{MAX_FILE_SIZE_MB}MB each).
+					</DrawerDescription>
 					<ScrollArea className="h-96">
 						<div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 xl:grid-cols-5 2xl:grid-cols-6 gap-2 max-w-7xl mx-auto">
 							{data?.images.map((image) => (
@@ -100,17 +102,63 @@ export const PhotosDrawer = ({
 							<div className="h-48 w-full rounded-lg cursor-pointer border-2 border-dashed bg-accent hover:bg-input">
 								<Dropzone
 									onDrop={(acceptedFiles) => {
-										const f: PendingFiles[] = acceptedFiles.map((file) => ({
+										const existingCount = data?.images?.length ?? 0;
+										const pendingCount = files.length;
+										const remainingSlots =
+											MAX_PHOTOS_PER_TRIP - existingCount - pendingCount;
+
+										if (remainingSlots <= 0) {
+											toast.error("Photo limit reached", {
+												description: `You already have ${existingCount + pendingCount} photos. You can upload up to ${MAX_PHOTOS_PER_TRIP} photos per trip.`,
+											});
+											return;
+										}
+
+										const allowedFiles = acceptedFiles.slice(
+											0,
+											Math.max(0, remainingSlots),
+										);
+										const overflowCount =
+											acceptedFiles.length - allowedFiles.length;
+
+										if (overflowCount > 0) {
+											const plural = remainingSlots === 1 ? "photo" : "photos";
+											toast.error("Too many photos", {
+												description: `You can add ${remainingSlots} more ${plural} (limit is ${MAX_PHOTOS_PER_TRIP} photos per trip).`,
+											});
+										}
+
+										if (!allowedFiles.length) return;
+
+										const f: PendingFiles[] = allowedFiles.map((file) => ({
 											file,
 											status: "awaiting",
 										}));
 										setFiles((state) => [...state, ...f]);
-										handleUpload(f);
+										void handleUpload(f);
 									}}
 									accept={{ "image/*": [".png", ".jpeg"] }}
+									maxSize={MAX_FILE_SIZE_MB * 1024 * 1024}
 									onDropRejected={(rejections) => {
+										if (!rejections.length) return;
+
+										const lines = rejections.map((rej) => {
+											const reasons = rej.errors.map((error) => {
+												switch (error.code) {
+													case "file-invalid-type":
+														return "unsupported format (PNG and JPEG only)";
+													case "file-too-large":
+														return `file is too large (max ${MAX_FILE_SIZE_MB}MB)`;
+													default:
+														return error.message;
+												}
+											});
+
+											return `${rej.file.name}: ${reasons.join(", ")}`;
+										});
+
 										toast.error("Some files were rejected", {
-											description: `Files: ${rejections.map((rej) => rej.file.name).join(", ")} were rejected`,
+											description: lines.join("\n"),
 											duration: 7000,
 										});
 									}}
