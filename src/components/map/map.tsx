@@ -26,7 +26,7 @@ export const InteractiveMap = () => {
 				id="map-container"
 				className="w-full h-full rounded-lg"
 			/>
-			<NewTrip />
+			<NewTrip map={map} />
 			{selectedId && <TripDetails tripId={selectedId} />}
 		</div>
 	);
