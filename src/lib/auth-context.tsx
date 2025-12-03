@@ -36,11 +36,14 @@ export const AuthProvider = ({ children }: { children: ReactNode }) => {
 		userRef.current = user;
 	}, [user]);
 
+	useEffect(() => {
+		getSession();
+	}, []);
+
 	const getSession = useCallback(async () => {
 		const { data, error } = await auth.getSession();
 
 		if (error || !data) {
-			toast.error("There was an error while getting user information");
 			return null;
 		}
 

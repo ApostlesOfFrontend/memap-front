@@ -1,8 +1,10 @@
+import { useAuth } from "@/lib/auth-context";
 import { Link } from "@tanstack/react-router";
 import { MapIcon } from "lucide-react";
 import { Button } from "../ui/button";
 
 export const Header = () => {
+	const { user } = useAuth();
 	return (
 		<header className="border-b border-border/40 bg-gradient-to-b from-background/80 via-background/60 to-background/20 backdrop-blur">
 			<div className="mx-auto flex max-w-6xl items-center justify-between px-4 py-4 sm:px-6 lg:px-8">
@@ -19,15 +21,18 @@ export const Header = () => {
 				</Link>
 
 				<nav aria-label="Primary" className="flex items-center gap-3 text-sm">
-					<Link
-						to="/app/map"
-						className="hidden text-muted-foreground transition-colors hover:text-foreground sm:inline-flex"
-					>
-						Open app
-					</Link>
-					<Button asChild variant="outline" size="sm">
-						<Link to="/login">Sign in</Link>
-					</Button>
+					{user ? (
+						<Link
+							to="/app/map"
+							className="hidden text-muted-foreground transition-colors hover:text-foreground sm:inline-flex"
+						>
+							Open app
+						</Link>
+					) : (
+						<Button asChild variant="outline" size="sm">
+							<Link to="/login">Sign in</Link>
+						</Button>
+					)}
 				</nav>
 			</div>
 		</header>
