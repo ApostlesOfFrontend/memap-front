@@ -14,6 +14,7 @@ import {
 	verticalListSortingStrategy,
 } from "@dnd-kit/sortable";
 import { RotateCcw, Save, X } from "lucide-react";
+import type { RefObject } from "react";
 import { Geocoder } from "../map/geocoder";
 import { Button } from "../ui/button";
 import {
@@ -27,7 +28,7 @@ import { MapOverlayCard } from "../ui/map-overlay-card";
 import { DraftRoutePoint } from "./draft-point-row";
 import { SaveTripDialog } from "./save";
 
-export const NewTrip = () => {
+export const NewTrip = ({ map }: { map: RefObject<mapboxgl.Map | null> }) => {
 	const {
 		isDrawingMode,
 		draftRoute,
@@ -61,7 +62,7 @@ export const NewTrip = () => {
 			</CardHeader>
 			<CardContent>
 				<div className="flex flex-col gap-4">
-					<Geocoder />
+					<Geocoder map={map} />
 					<div className="flex flex-col gap-2 max-h-[400px] overflow-auto">
 						<DndContext
 							sensors={sensors}
