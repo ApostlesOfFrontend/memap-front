@@ -1,18 +1,16 @@
+import type { Position } from "geojson";
 import { create } from "zustand";
-
-//TODO: Refactor types
-type RoutePoint = [number, number];
 
 export interface DraftRoutePoint {
 	name?: string | null;
-	location: RoutePoint;
+	location: Position;
 }
 
 interface TripDraftState {
 	isDrawingMode: boolean;
 	draftRoute: DraftRoutePoint[];
 	toggleDrawingMode: () => void;
-	addPoint: (point: RoutePoint) => void;
+	addPoint: (point: Position) => void;
 	addFullPoint: (point: DraftRoutePoint) => void;
 	removePoint: (index: number) => void;
 	setDraftRoute: (next: DraftRoutePoint[]) => void;

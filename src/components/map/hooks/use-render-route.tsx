@@ -1,9 +1,10 @@
 import { selectedRouteStore } from "@/state/selected-route";
 import type { FeatureCollection, MultiLineString } from "geojson";
+import type { Position } from "geojson";
 import { type RefObject, useEffect, useMemo } from "react";
 
 const calculateBounds = (
-	coordinates: [number, number][],
+	coordinates: Position[],
 ): [[number, number], [number, number]] => {
 	if (coordinates.length === 0) {
 		// Default bounds if no coordinates

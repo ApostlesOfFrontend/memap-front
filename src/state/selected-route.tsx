@@ -1,10 +1,9 @@
+import type { Position } from "geojson";
 import { create } from "zustand";
 
-export type Route = [number, number];
-
 interface SelectedRouteState {
-	route: Route[] | null;
-	setRoute: (route: Route[]) => void;
+	route: Position[] | null;
+	setRoute: (route: Position[]) => void;
 	deleteRoute: () => void;
 }
 export const selectedRouteStore = create<SelectedRouteState>((set) => ({

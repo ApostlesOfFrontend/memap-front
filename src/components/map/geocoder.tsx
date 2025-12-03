@@ -22,7 +22,6 @@ export const Geocoder = () => {
 		geocoderRef.current.on("result", (e) => {
 			addFullPoint({
 				name: e.result.text,
-				//TODO: Fix Position type
 				location: e.result.geometry.coordinates,
 			});
 			geocoderRef.current?.clear();

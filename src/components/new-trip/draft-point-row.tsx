@@ -1,5 +1,6 @@
 import { useSortable } from "@dnd-kit/sortable";
 import { CSS } from "@dnd-kit/utilities";
+import type { Position } from "geojson";
 import { GripVertical, X } from "lucide-react";
 import { Button } from "../ui/button";
 
@@ -11,7 +12,7 @@ export const DraftRoutePoint = ({
 }: {
 	id: string;
 	name?: string | null;
-	location: [number, number];
+	location: Position;
 	onRemove: () => void;
 }) => {
 	const {
