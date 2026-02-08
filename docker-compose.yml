@@ -7,4 +7,3 @@ services:
       dockerfile: Dockerfile
     ports:
       - "2000:80"
-    restart: unless-stopped
