@@ -16,9 +16,6 @@ export const usePresignedUploadHandler = () => {
 		const uploadResponse = await fetch(resp.signedUrl, {
 			method: "PUT",
 			body: file,
-			headers: {
-				"Content-Type": file.type,
-			},
 		});
 
 		if (!uploadResponse.ok)
