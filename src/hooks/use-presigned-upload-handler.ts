@@ -13,9 +13,10 @@ export const usePresignedUploadHandler = () => {
 			tripId,
 		});
 
+		const blob = new Blob([file], { type: "" }); // Empty type
 		const uploadResponse = await fetch(resp.signedUrl, {
 			method: "PUT",
-			body: file,
+			body: blob,
 		});
 
 		if (!uploadResponse.ok)
