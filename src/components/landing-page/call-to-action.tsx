@@ -5,8 +5,7 @@ import { Button } from "../ui/button";
 import { FadeIn } from "../ui/fade-in";
 
 export const CallToAction = () => {
-	const { user } = useAuth();
-
+	const { isAuthenticated } = useAuth();
 	return (
 		<section
 			className="mx-auto max-w-4xl px-4 pb-20 sm:px-6 lg:px-8"
@@ -27,14 +26,15 @@ export const CallToAction = () => {
 						</p>
 					</div>
 					<div className="flex flex-col gap-2">
-						{user ? (
+						{isAuthenticated && (
 							<Button asChild size="sm">
 								<Link to="/app/map">
 									Open the app
 									<ArrowRight className="ml-1.5 h-4 w-4" />
 								</Link>
 							</Button>
-						) : (
+						)}
+						{!isAuthenticated && (
 							<Button asChild variant="outline" size="sm">
 								<Link to="/login">Sign in</Link>
 							</Button>

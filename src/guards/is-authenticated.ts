@@ -5,7 +5,7 @@ import { toast } from "sonner";
 export const isAuthenticatedGuard = async ({
 	context,
 }: { context: RouterContext }) => {
-	const isAuthenticated = await context.auth.isAuthenticated();
+	const isAuthenticated = await context.auth.isAuthenticatedWithReauth();
 	if (!isAuthenticated) {
 		toast.error("There was an error while getting user information");
 		throw redirect({

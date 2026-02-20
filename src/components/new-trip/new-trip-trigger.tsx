@@ -16,7 +16,7 @@ export const NewTripTrigger = () => {
 			<TooltipTrigger asChild>
 				<Button
 					variant="ghost"
-					className="fixed bottom-8 right-8 w-12 h-12 rounded-full bg-blue-400 flex items-center justify-center"
+					className="fixed bottom-8 right-8 w-12 h-12 rounded-full bg-[#10b981] hover:bg-[#10b981]/80 flex items-center justify-center"
 					onClick={() => {
 						toggleDrawingMode();
 						deleteRoute();

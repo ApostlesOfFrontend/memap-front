@@ -6,7 +6,7 @@ export const Footer = () => {
 					<span className="font-medium text-foreground">Memap</span> · Map your
 					trips, keep your memories.
 				</p>
-				<p>Built with a dark, calm interface for late-night trip planning.</p>
+				<p>Built with a dark, calm interface for late-night trip exploring.</p>
 			</div>
 		</footer>
 	);
