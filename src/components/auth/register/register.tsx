@@ -1,5 +1,4 @@
 import { useAppForm } from "@/components/forms/context";
-import { Button } from "@/components/ui/button";
 import {
 	Card,
 	CardContent,
@@ -12,6 +11,7 @@ import { formOptions } from "@tanstack/react-form";
 import { Link, useNavigate } from "@tanstack/react-router";
 import { useState } from "react";
 import { toast } from "sonner";
+import { WithGoogleButton } from "../with-google-button";
 import { registerSchema } from "./register-schema";
 
 const useRegisterFormOptions = () => {
@@ -112,10 +112,7 @@ export const RegisterForm = () => {
 							Or continue with
 						</span>
 					</div>
-					{/**TODO: implement google social sign on */}
-					<Button className="w-full" variant="outline">
-						Sign up with Google
-					</Button>
+					<WithGoogleButton />
 					<div className="text-sm text-center">
 						Already have an account?{" "}
 						<Link to="/login" className="underline underline-offset-3">
