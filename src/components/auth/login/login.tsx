@@ -1,5 +1,4 @@
 import { useAppForm } from "@/components/forms/context";
-import { Button } from "@/components/ui/button";
 import {
 	Card,
 	CardContent,
@@ -11,6 +10,7 @@ import { auth } from "@/lib/auth-client";
 import { formOptions } from "@tanstack/react-form";
 import { Link, useNavigate } from "@tanstack/react-router";
 import { toast } from "sonner";
+import { WithGoogleButton } from "../with-google-button";
 import { loginSchema } from "./login-schema";
 
 const useLoginFormOptions = () => {
@@ -90,10 +90,7 @@ export const LoginForm = () => {
 							Or continue with
 						</span>
 					</div>
-					{/**TODO: implement google social sign on */}
-					<Button className="w-full" variant="outline">
-						Login with Google
-					</Button>
+					<WithGoogleButton />
 					<div className="text-sm text-center">
 						Don't have an account?{" "}
 						<Link to="/register" className="underline underline-offset-3">

@@ -5,16 +5,16 @@ import {
 	useCallback,
 	useContext,
 	useEffect,
-	useRef,
 	useState,
 } from "react";
 import { toast } from "sonner";
 import { auth } from "./auth-client";
 
 export interface AuthContextI {
-	isAuthenticated: () => Promise<boolean>;
+	isAuthenticatedWithReauth: () => Promise<boolean>;
 	user?: User;
 	session?: Session;
+	isAuthenticated: boolean;
 	logout: (navCallback: () => void) => Promise<void>;
 }
 
@@ -23,42 +23,36 @@ const AuthContext = createContext<AuthContextI | null>(null);
 export const AuthProvider = ({ children }: { children: ReactNode }) => {
 	const [user, setUser] = useState<User | undefined>();
 	const [session, setSession] = useState<Session | undefined>();
-
-	/**
-	 * NOTE:
-	 * Following Ref and Effects are needed.
-	 * isAuthenticated is asynchronous callback which might not get freshest user from useState
-	 * causing unnecessary session refetches. With this, isAuthenticated always operates on
-	 * freshest user possible.
-	 */
-	const userRef = useRef<User | undefined>(null);
-	useEffect(() => {
-		userRef.current = user;
-	}, [user]);
+	const [isAuthenticated, setIsAuthenticated] = useState<boolean>(false);
 
 	const getSession = useCallback(async () => {
 		const { data, error } = await auth.getSession();
 
 		if (error || !data) {
-			toast.error("There was an error while getting user information");
+			setUser(() => undefined);
+			setSession(() => undefined);
+			setIsAuthenticated(() => false);
 			return null;
 		}
 
 		setUser(() => data.user);
 		setSession(() => data.session);
+		setIsAuthenticated(() => true);
 		return data;
 	}, []);
 
-	const isAuthenticated = useCallback(async () => {
-		const currentUser = userRef.current;
+	useEffect(() => {
+		getSession();
+	}, [getSession]);
 
-		if (currentUser === undefined) {
+	const isAuthenticatedWithReauth = useCallback(async () => {
+		if (user === undefined) {
 			const data = await getSession();
 			return !!data?.user;
 		}
 
-		return !!currentUser;
-	}, [getSession]);
+		return !!user;
+	}, [getSession, user]);
 
 	const logout = useCallback(async (navCallback: () => void) => {
 		const { error } = await auth.signOut();
@@ -68,11 +62,20 @@ export const AuthProvider = ({ children }: { children: ReactNode }) => {
 		}
 		setUser(undefined);
 		setSession(undefined);
+		setIsAuthenticated(false);
 		navCallback();
 	}, []);
 
 	return (
-		<AuthContext.Provider value={{ isAuthenticated, user, session, logout }}>
+		<AuthContext.Provider
+			value={{
+				isAuthenticatedWithReauth,
+				user,
+				session,
+				logout,
+				isAuthenticated,
+			}}
+		>
 			{children}
 		</AuthContext.Provider>
 	);

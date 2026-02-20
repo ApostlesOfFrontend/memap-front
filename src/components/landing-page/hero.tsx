@@ -1,9 +1,11 @@
+import { useAuth } from "@/lib/auth-context";
 import { Link } from "@tanstack/react-router";
 import { ArrowRight, RouteIcon } from "lucide-react";
 import { Button } from "../ui/button";
 import { FadeIn } from "../ui/fade-in";
 
 export const Hero = () => {
+	const { isAuthenticated } = useAuth();
 	return (
 		<section
 			className="mx-auto max-w-6xl px-4 py-16 sm:px-6 lg:pb-24 lg:pt-16 lg:px-8"
@@ -39,15 +41,19 @@ export const Hero = () => {
 
 					<div className="flex flex-col gap-3 sm:flex-row sm:items-center">
 						<div className="flex flex-wrap gap-2">
-							<Button asChild size="lg">
-								<Link to="/app/map">
-									Start your next trip
-									<ArrowRight className="ml-2 h-4 w-4" />
-								</Link>
-							</Button>
-							<Button asChild variant="outline" size="lg">
-								<Link to="/login">Sign in to your map</Link>
-							</Button>
+							{isAuthenticated && (
+								<Button asChild size="lg">
+									<Link to="/app/map">
+										Start your next trip
+										<ArrowRight className="ml-2 h-4 w-4" />
+									</Link>
+								</Button>
+							)}
+							{!isAuthenticated && (
+								<Button asChild variant="outline" size="lg">
+									<Link to="/login">Sign in to your map</Link>
+								</Button>
+							)}
 						</div>
 					</div>
 
