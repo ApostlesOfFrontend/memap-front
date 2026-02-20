@@ -1,9 +1,12 @@
+import { useAuth } from "@/lib/auth-context";
 import { Link } from "@tanstack/react-router";
 import { ArrowRight } from "lucide-react";
 import { Button } from "../ui/button";
 import { FadeIn } from "../ui/fade-in";
 
 export const CallToAction = () => {
+	const { user } = useAuth();
+
 	return (
 		<section
 			className="mx-auto max-w-4xl px-4 pb-20 sm:px-6 lg:px-8"
@@ -24,15 +27,18 @@ export const CallToAction = () => {
 						</p>
 					</div>
 					<div className="flex flex-col gap-2">
-						<Button asChild size="sm">
-							<Link to="/app/map">
-								Open the app
-								<ArrowRight className="ml-1.5 h-4 w-4" />
-							</Link>
-						</Button>
-						<Button asChild variant="outline" size="sm">
-							<Link to="/login">Sign in</Link>
-						</Button>
+						{user ? (
+							<Button asChild size="sm">
+								<Link to="/app/map">
+									Open the app
+									<ArrowRight className="ml-1.5 h-4 w-4" />
+								</Link>
+							</Button>
+						) : (
+							<Button asChild variant="outline" size="sm">
+								<Link to="/login">Sign in</Link>
+							</Button>
+						)}
 					</div>
 				</div>
 			</FadeIn>
