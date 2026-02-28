@@ -15,6 +15,8 @@ import {
 } from "../ui/card";
 import { MapOverlayCard } from "../ui/map-overlay-card";
 import { ErrorState } from "../ui/network/error";
+import { Tooltip, TooltipContent, TooltipTrigger } from "../ui/tooltip";
+import { DeleteTripDialog } from "./delete-dialog";
 import { TripDetailsSkeleton } from "./skeleton";
 
 export const TripDetails = ({ tripId }: { tripId: number }) => {
@@ -56,18 +58,29 @@ export const TripDetails = ({ tripId }: { tripId: number }) => {
 				</div>
 			</CardContent>
 			<CardFooter className="flex gap-2 justify-end">
-				<Button
-					size="icon"
-					onClick={() => {
-						setSelectedId(null);
-						setRoute([]);
-					}}
-				>
-					<X />
-				</Button>
-				<PhotosDrawer tripId={tripId}>
-					<Button>Photos</Button>
-				</PhotosDrawer>
+				<DeleteTripDialog />
+				<Tooltip>
+					<TooltipTrigger>
+						<Button
+							size="icon"
+							onClick={() => {
+								setSelectedId(null);
+								setRoute([]);
+							}}
+						>
+							<X />
+						</Button>
+					</TooltipTrigger>
+					<TooltipContent>Closes this trip</TooltipContent>
+				</Tooltip>
+				<Tooltip>
+					<TooltipTrigger>
+						<PhotosDrawer tripId={tripId}>
+							<Button>Photos</Button>
+						</PhotosDrawer>
+					</TooltipTrigger>
+					<TooltipContent>View photos from this trip</TooltipContent>
+				</Tooltip>
 			</CardFooter>
 		</MapOverlayCard>
 	);
