@@ -1,5 +1,4 @@
 import { InteractiveMap } from "@/components/map/map";
-import { NewTripTrigger } from "@/components/new-trip/new-trip-trigger";
 import { createFileRoute } from "@tanstack/react-router";
 
 export const Route = createFileRoute("/app/map")({
@@ -10,7 +9,6 @@ function RouteComponent() {
 	return (
 		<>
 			<InteractiveMap />
-			<NewTripTrigger />
 		</>
 	);
 }

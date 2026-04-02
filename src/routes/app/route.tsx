@@ -1,3 +1,4 @@
+import { MapControllerProvider } from "@/components/map/map-context";
 import { SidebarProvider } from "@/components/ui/sidebar";
 import { AppSidebar } from "@/components/ui/sidebar/sidebar";
 import { isAuthenticatedGuard } from "@/guards/is-authenticated";
@@ -10,9 +11,11 @@ export const Route = createFileRoute("/app")({
 
 function RouteComponent() {
 	return (
-		<SidebarProvider>
-			<AppSidebar />
-			<Outlet />
-		</SidebarProvider>
+		<MapControllerProvider>
+			<SidebarProvider>
+				<AppSidebar />
+				<Outlet />
+			</SidebarProvider>
+		</MapControllerProvider>
 	);
 }
