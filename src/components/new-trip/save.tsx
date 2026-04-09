@@ -15,6 +15,7 @@ import {
 	DialogTrigger,
 } from "../ui/dialog";
 import { newTripSchema } from "./form-schema";
+import { useCreateTripFlow } from "./hooks/use-create-trip-flow";
 
 export const SaveTripDialog = ({ children }: { children: ReactNode }) => {
 	const { draftRoute, toggleDrawingMode } = tripDraftStore();
@@ -32,6 +33,8 @@ export const SaveTripDialog = ({ children }: { children: ReactNode }) => {
 		toggleDrawingMode();
 	};
 
+	const { flow } = useCreateTripFlow(onSuccess);
+
 	const { mutate } = useCreateTripMutation(onSuccess);
 
 	const form = useAppForm({
@@ -45,7 +48,7 @@ export const SaveTripDialog = ({ children }: { children: ReactNode }) => {
 			onSubmit: newTripSchema,
 		},
 		onSubmit: ({ value }) => {
-			mutate({
+			flow({
 				...value,
 				route,
 			});
