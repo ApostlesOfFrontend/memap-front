@@ -26,6 +26,7 @@ export const NewTrip = () => {
 		setDraftRoute,
 		clearDraft,
 		toggleDrawingMode,
+		editPoint,
 		removePoint,
 	} = tripDraftStore();
 
@@ -78,6 +79,7 @@ export const NewTrip = () => {
 										id={id}
 										name={name}
 										location={route.location}
+										onNameChange={(name) => editPoint(index, { name })}
 										onRemove={() => removePoint(index)}
 									/>
 								);

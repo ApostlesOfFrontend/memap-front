@@ -3,16 +3,19 @@ import { CSS } from "@dnd-kit/utilities";
 import type { Position } from "geojson";
 import { GripVertical, X } from "lucide-react";
 import { Button } from "../ui/button";
+import { Input } from "../ui/input";
 
 export const DraftRoutePoint = ({
 	id,
 	name,
 	location,
+	onNameChange,
 	onRemove,
 }: {
 	id: string;
 	name?: string | null;
 	location: Position;
+	onNameChange: (name: string) => void;
 	onRemove: () => void;
 }) => {
 	const {
@@ -47,13 +50,13 @@ export const DraftRoutePoint = ({
 				>
 					<GripVertical className="h-4 w-4 opacity-70" />
 				</button>
-				<div className="truncate max-w-44">
-					<span className="text-sm font-mono">
-						{typeof name === "string" && name.length > 0
-							? name
-							: `${location[1].toFixed(3)}, ${location[0].toFixed(3)}`}
-					</span>
-				</div>
+				<Input
+					value={name ?? ""}
+					onChange={(event) => onNameChange(event.target.value)}
+					placeholder={`${location[1].toFixed(3)}, ${location[0].toFixed(3)}`}
+					aria-label="Location name"
+					className="h-8 max-w-44 text-sm"
+				/>
 			</div>
 			<Button
 				size="icon"
