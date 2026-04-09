@@ -19,6 +19,12 @@ import { newTripSchema } from "./form-schema";
 export const SaveTripDialog = ({ children }: { children: ReactNode }) => {
 	const { draftRoute, toggleDrawingMode } = tripDraftStore();
 	const [opened, setOpened] = useState(false);
+	const route = draftRoute.map(({ name, location, clientId, photos }) => ({
+		name: name ?? null,
+		location: [location[0], location[1]] as [number, number],
+		clientId,
+		totalPhotos: photos.length,
+	}));
 
 	const onSuccess = () => {
 		//TODO: would be nice if you were taken to the trip
@@ -32,14 +38,17 @@ export const SaveTripDialog = ({ children }: { children: ReactNode }) => {
 		defaultValues: {
 			title: "",
 			description: "",
-			route: draftRoute,
+			route,
 			dates: { to: new Date(), from: new Date() },
 		},
 		validators: {
 			onSubmit: newTripSchema,
 		},
 		onSubmit: ({ value }) => {
-			mutate(value);
+			mutate({
+				...value,
+				route,
+			});
 		},
 	});
 

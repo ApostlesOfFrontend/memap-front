@@ -111,9 +111,9 @@ export const useDrawingMode = (map: RefObject<mapboxgl.Map | null>) => {
 			if (features.length > 0) {
 				// Clicked on a marker - remove the point
 				const feature = features[0];
-				const index = feature.properties?.index;
-				if (typeof index === "number") {
-					removePoint(index);
+				const pointId = feature.properties?.pointId;
+				if (typeof pointId === "string") {
+					removePoint(pointId);
 				}
 			} else {
 				/**
@@ -158,10 +158,10 @@ export const useDrawingMode = (map: RefObject<mapboxgl.Map | null>) => {
 			if (markersSource) {
 				markersSource.setData({
 					type: "FeatureCollection",
-					features: route.map((coord, index) => ({
+					features: draftRoute.map((point) => ({
 						type: "Feature" as const,
-						geometry: { type: "Point" as const, coordinates: coord },
-						properties: { index },
+						geometry: { type: "Point" as const, coordinates: point.location },
+						properties: { pointId: point.clientId },
 					})),
 				});
 			}
@@ -172,5 +172,5 @@ export const useDrawingMode = (map: RefObject<mapboxgl.Map | null>) => {
 		} else {
 			map.current.once("load", update);
 		}
-	}, [map, draftRouteGeoJSON, route]);
+	}, [map, draftRoute, draftRouteGeoJSON]);
 };

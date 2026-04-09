@@ -26,7 +26,9 @@ export const NewTrip = () => {
 		setDraftRoute,
 		clearDraft,
 		toggleDrawingMode,
+		addPointPhotos,
 		editPoint,
+		removePointPhoto,
 		removePoint,
 	} = tripDraftStore();
 
@@ -35,7 +37,7 @@ export const NewTrip = () => {
 	);
 
 	if (!isDrawingMode) return;
-	const items = draftRoute.map((_, index) => `${index}`);
+	const items = draftRoute.map((route) => route.clientId);
 
 	const handleDragEnd = (event: DragEndEvent) => {
 		const { active, over } = event;
@@ -70,17 +72,21 @@ export const NewTrip = () => {
 							items={items}
 							strategy={verticalListSortingStrategy}
 						>
-							{draftRoute.map((route, index) => {
-								const { location, name } = route;
-								const id = `${index}`;
+							{draftRoute.map((route) => {
+								const { clientId, location, name, photos } = route;
 								return (
 									<DraftRoutePoint
-										key={`${location[0]}-${location[1]}-${index}`}
-										id={id}
+										key={clientId}
+										id={clientId}
 										name={name}
-										location={route.location}
-										onNameChange={(name) => editPoint(index, { name })}
-										onRemove={() => removePoint(index)}
+										location={location}
+										photos={photos}
+										onNameChange={(name) => editPoint(clientId, { name })}
+										onAddPhotos={(files) => addPointPhotos(clientId, files)}
+										onRemovePhoto={(photoId) =>
+											removePointPhoto(clientId, photoId)
+										}
+										onRemove={() => removePoint(clientId)}
 									/>
 								);
 							})}

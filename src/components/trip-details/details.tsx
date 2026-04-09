@@ -8,7 +8,6 @@ import { PhotosDrawer } from "../trip-photos/photos-drawer";
 import { Button } from "../ui/button";
 import { ErrorState } from "../ui/network/error";
 import { Tooltip, TooltipContent, TooltipTrigger } from "../ui/tooltip";
-import { TripCardAlteriative } from "./alternative";
 import { DeleteTripDialog } from "./delete-dialog";
 import { TripDetailsSkeleton } from "./skeleton";
 

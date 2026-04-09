@@ -1,12 +1,18 @@
+import { cn } from "@/lib/utils";
 import { CheckCircle, Clock, Upload, XCircle } from "lucide-react";
-import type { UploadStatuses } from "../trip-photos/photos-drawer";
+import type { ReactNode } from "react";
+import type { UploadStatus } from "./upload-status";
 
 interface PendingImagePropsI {
 	src: string;
-	status: UploadStatuses;
+	status: UploadStatus;
+	className?: string;
+	imageClassName?: string;
+	action?: ReactNode;
+	hideStatus?: boolean;
 }
 
-const getStatusIcon = (status: UploadStatuses) => {
+const getStatusIcon = (status: UploadStatus) => {
 	switch (status) {
 		case "awaiting":
 			return <Clock className="text-yellow-500 z-100" size={24} />;
@@ -19,16 +25,34 @@ const getStatusIcon = (status: UploadStatuses) => {
 	}
 };
 
-export const PendingImage = ({ src, status }: PendingImagePropsI) => {
+export const PendingImage = ({
+	src,
+	status,
+	className,
+	imageClassName,
+	action,
+	hideStatus,
+}: PendingImagePropsI) => {
 	return (
-		<div className="relative flex h-48 w-full rounded-lg cursor-pointer">
-			<div className="absolute top-2 right-2 z-50 bg-background/70 rounded-full p-2">
-				{getStatusIcon(status)}
-			</div>
+		<div
+			className={cn(
+				"relative flex h-48 w-full rounded-lg cursor-pointer",
+				className,
+			)}
+		>
+			{action ? action : null}
+			{!hideStatus && (
+				<div className="absolute top-2 right-2 z-50 bg-background/70 rounded-full p-2">
+					{getStatusIcon(status)}
+				</div>
+			)}
 			<img
 				src={src}
 				alt=""
-				className="absolute object-cover h-48 w-full rounded-lg cursor-pointer"
+				className={cn(
+					"absolute object-cover h-48 w-full rounded-lg cursor-pointer",
+					imageClassName,
+				)}
 			/>
 		</div>
 	);
