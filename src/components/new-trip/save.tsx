@@ -1,4 +1,3 @@
-import { useCreateTripMutation } from "@/api/trip/hooks/create";
 import { tripDraftStore } from "@/state/trip-draft";
 import { type ReactNode, useState } from "react";
 import { toast } from "sonner";
@@ -14,8 +13,11 @@ import {
 	DialogTitle,
 	DialogTrigger,
 } from "../ui/dialog";
+import { Field, FieldLabel } from "../ui/field";
+import { Progress } from "../ui/progress";
 import { newTripSchema } from "./form-schema";
 import { useCreateTripFlow } from "./hooks/use-create-trip-flow";
+import TripLoader from "./trip_photo_loader.svg";
 
 export const SaveTripDialog = ({ children }: { children: ReactNode }) => {
 	const { draftRoute, toggleDrawingMode } = tripDraftStore();
@@ -33,9 +35,8 @@ export const SaveTripDialog = ({ children }: { children: ReactNode }) => {
 		toggleDrawingMode();
 	};
 
-	const { flow } = useCreateTripFlow(onSuccess);
-
-	const { mutate } = useCreateTripMutation(onSuccess);
+	const { flow, errors, status, isPending, reflow, progress } =
+		useCreateTripFlow(onSuccess);
 
 	const form = useAppForm({
 		defaultValues: {
@@ -78,42 +79,61 @@ export const SaveTripDialog = ({ children }: { children: ReactNode }) => {
 							<DialogTitle>Save trip</DialogTitle>
 							<DialogDescription>Add details about your trip</DialogDescription>
 						</DialogHeader>
-						<div className="w-full my-4 flex flex-col gap-4">
-							<form.AppField
-								name="title"
-								children={(field) => (
-									<field.Input
-										label="Trip Title"
-										placeholder="The Grand Tour"
-									/>
-								)}
-							/>
-							<form.AppField
-								name="dates"
-								children={(field) => (
-									<field.DateRangePicker
-										label="Date"
-										description="Choose a date range when you had your trip"
-									/>
-								)}
-							/>
-							<form.AppField
-								name="description"
-								children={(field) => (
-									<field.Textarea
-										label="Descripton"
-										placeholder="First trip around the world"
-										description="Describe your trip in a few words"
-									/>
-								)}
-							/>
-						</div>
+						{isPending ? (
+							<div className="flex flex-col items-center justify-center w-full my-4">
+								<img
+									src={TripLoader}
+									alt="Trip loader"
+									className="mx-auto mb-4 max-h-60"
+								/>
+								<Field>
+									<FieldLabel htmlFor="progress-upload">
+										<span>Upload progress</span>
+										<span className="ml-auto">{progress}%</span>
+									</FieldLabel>
+									<Progress value={progress} id="progress-upload" />
+								</Field>
+							</div>
+						) : (
+							<div className="w-full my-4 flex flex-col gap-4">
+								<form.AppField
+									name="title"
+									children={(field) => (
+										<field.Input
+											label="Trip Title"
+											placeholder="The Grand Tour"
+										/>
+									)}
+								/>
+								<form.AppField
+									name="dates"
+									children={(field) => (
+										<field.DateRangePicker
+											label="Date"
+											description="Choose a date range when you had your trip"
+										/>
+									)}
+								/>
+								<form.AppField
+									name="description"
+									children={(field) => (
+										<field.Textarea
+											label="Descripton"
+											placeholder="First trip around the world"
+											description="Describe your trip in a few words"
+										/>
+									)}
+								/>
+							</div>
+						)}
 
 						<DialogFooter>
 							<DialogClose asChild>
-								<Button variant="outline">Cancel</Button>
+								<Button variant="outline" disabled={isPending}>
+									Cancel
+								</Button>
 							</DialogClose>
-							<Button>Save</Button>
+							<Button disabled={isPending}>Save</Button>
 						</DialogFooter>
 					</form.AppForm>
 				</form>
