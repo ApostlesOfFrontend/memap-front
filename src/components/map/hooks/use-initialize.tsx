@@ -6,6 +6,7 @@ mapboxgl.accessToken = import.meta.env.VITE_MAPBOX_TOKEN || "";
 export const useMapInit = (
 	mapContainer: RefObject<HTMLDivElement | null>,
 	map: RefObject<mapboxgl.Map | null>,
+	onMapChange?: (map: mapboxgl.Map | null) => void,
 ) => {
 	useEffect(() => {
 		if (map.current) return;
@@ -31,6 +32,7 @@ export const useMapInit = (
 				// pitch: 40,
 				logoPosition: "bottom-left",
 			});
+			onMapChange?.(map.current);
 
 			map.current.on("load", () => {
 				console.log("Map loaded successfully");
@@ -51,7 +53,8 @@ export const useMapInit = (
 				console.log("Cleaning up map...");
 				map.current.remove();
 				map.current = null;
+				onMapChange?.(null);
 			}
 		};
-	}, [mapContainer, map]);
+	}, [mapContainer, map, onMapChange]);
 };

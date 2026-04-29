@@ -1,40 +1,27 @@
-import {
-	CardContent,
-	CardDescription,
-	CardFooter,
-	CardHeader,
-	CardTitle,
-} from "../ui/card";
-import { MapOverlayCard } from "../ui/map-overlay-card";
 import { Skeleton } from "../ui/skeleton";
 
 export const TripDetailsSkeleton = () => {
 	return (
-		<MapOverlayCard>
-			<CardHeader>
-				<CardTitle>
-					<Skeleton className="h-6 w-48" />
-				</CardTitle>
-				<CardDescription>
-					<Skeleton className="h-5 w-full" />
-				</CardDescription>
-			</CardHeader>
-			<CardContent className="space-y-4">
-				<div className="space-y-2">
-					<div className="flex items-center gap-2 text-sm">
-						<Skeleton className="h-4 w-16" />
-						<Skeleton className="h-4 w-32" />
-					</div>
-					<div className="flex items-center gap-2 text-sm">
-						<Skeleton className="h-4 w-16" />
-						<Skeleton className="h-4 w-32" />
-					</div>
+		<div className="mx-2 my-3 flex flex-col gap-4 rounded-xl border border-sidebar-border/70 bg-sidebar-accent/30 p-4 shadow-sm">
+			<div className="space-y-2">
+				<Skeleton className="h-5 w-40" />
+				<Skeleton className="h-4 w-full" />
+			</div>
+			<div className="space-y-3 rounded-lg border border-sidebar-border/80 bg-background/60 p-3">
+				<div className="flex items-center gap-2 text-sm">
+					<Skeleton className="h-4 w-16" />
+					<Skeleton className="h-4 w-28" />
 				</div>
-			</CardContent>
-			<CardFooter className="flex gap-2 justify-end">
-				<Skeleton className="h-9 w-9 rounded-md" />
-				<Skeleton className="h-9 w-20 rounded-md" />
-			</CardFooter>
-		</MapOverlayCard>
+				<div className="flex items-center gap-2 text-sm">
+					<Skeleton className="h-4 w-16" />
+					<Skeleton className="h-4 w-28" />
+				</div>
+			</div>
+			<div className="grid grid-cols-3 gap-2">
+				<Skeleton className="h-9 rounded-md" />
+				<Skeleton className="h-9 rounded-md" />
+				<Skeleton className="h-9 rounded-md" />
+			</div>
+		</div>
 	);
 };

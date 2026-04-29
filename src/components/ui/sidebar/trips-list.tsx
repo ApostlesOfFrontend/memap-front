@@ -38,7 +38,7 @@ export const SidebarTripsList = () => {
 
 	if (data.length === 0)
 		return (
-			<Card className="m-4 text-center border-dashed border-2 border-muted-foreground/20">
+			<Card className=" text-center border-dashed border-2 border-muted-foreground/20">
 				<CardHeader>
 					<CardTitle className="text-lg font-semibold text-muted-foreground">
 						No trips yet

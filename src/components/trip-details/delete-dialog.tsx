@@ -45,8 +45,9 @@ export const DeleteTripDialog = () => {
 			<Tooltip>
 				<TooltipTrigger asChild>
 					<AlertDialogTrigger asChild>
-						<Button variant="destructive" size="icon">
+						<Button variant="destructive">
 							<Trash />
+							Delete
 						</Button>
 					</AlertDialogTrigger>
 				</TooltipTrigger>

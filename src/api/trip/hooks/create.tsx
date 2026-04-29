@@ -2,12 +2,12 @@ import { fetcher } from "@/api/util/fetch";
 import { useMutation, useQueryClient } from "@tanstack/react-query";
 import { toast } from "sonner";
 import { tripQueryKeys } from "../query-keys";
-import type { CreateTripDTO } from "../types/create";
+import type { CreateTripDTO, CreateTripResponseDTO } from "../types/create";
 
 export const useCreateTripMutation = (onSuccessCallback?: () => void) => {
 	//TODO: rework unknown and Error - uniformly handle are success mutations and errors
 	const queryClient = useQueryClient();
-	return useMutation<unknown, Error, CreateTripDTO, void>({
+	return useMutation<CreateTripResponseDTO, Error, CreateTripDTO, void>({
 		mutationFn: (trip) =>
 			fetcher("/api/trips", trip, {
 				method: "POST",
