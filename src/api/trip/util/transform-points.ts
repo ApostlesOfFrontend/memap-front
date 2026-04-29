@@ -6,8 +6,10 @@ export const transformPointsToDraft = (
 	points: Array<POI>,
 ): Array<DraftRoutePoint> => {
 	return points.map((point) => ({
+		clientId: crypto.randomUUID(),
 		name: point.name,
 		location: [point.lng, point.lat],
+		photos: [],
 	}));
 };
 

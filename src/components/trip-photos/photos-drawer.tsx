@@ -6,6 +6,7 @@ import Dropzone from "react-dropzone";
 import { toast } from "sonner";
 import { PendingImage } from "../image/pending-upload";
 import { ImageThumbnail } from "../image/thumbnail";
+import type { UploadStatus } from "../image/upload-status";
 import {
 	Drawer,
 	DrawerContent,
@@ -19,14 +20,8 @@ import { ScrollArea } from "../ui/scroll-area";
 const MAX_PHOTOS_PER_TRIP = 20;
 const MAX_FILE_SIZE_MB = 10;
 
-export type UploadStatuses =
-	| "awaiting"
-	| "uploading"
-	| "upload_error"
-	| "completed";
-
 export type PendingFiles = {
-	status: UploadStatuses;
+	status: UploadStatus;
 	file: File;
 	id?: string;
 	objectUrl: string;
@@ -50,7 +45,7 @@ export const PhotosDrawer = ({
 
 	const updateFileStatus = (
 		index: number,
-		status: UploadStatuses,
+		status: UploadStatus,
 		id?: string,
 	) => {
 		setFiles((prevFiles) =>

@@ -1,12 +1,14 @@
 import MapboxGeocoder from "@mapbox/mapbox-gl-geocoder";
 import "@mapbox/mapbox-gl-geocoder/dist/mapbox-gl-geocoder.css";
 import { tripDraftStore } from "@/state/trip-draft";
+import { useMapController } from "./map-context";
 import mapboxgl from "mapbox-gl";
-import { type RefObject, useEffect, useRef } from "react";
+import { useEffect, useRef } from "react";
 
-export const Geocoder = ({ map }: { map: RefObject<mapboxgl.Map | null> }) => {
+export const Geocoder = () => {
 	const geocoderRef = useRef<MapboxGeocoder>(null);
 	const { addFullPoint } = tripDraftStore();
+	const { flyTo } = useMapController();
 
 	useEffect(() => {
 		if (geocoderRef.current) return;
@@ -31,7 +33,7 @@ export const Geocoder = ({ map }: { map: RefObject<mapboxgl.Map | null> }) => {
 			 * timeout here seems to remediate issue.
 			 */
 			setTimeout(() => {
-				map.current?.flyTo({
+				flyTo({
 					center: e.result.geometry.coordinates as [number, number],
 					duration: 1000,
 					essential: true,
@@ -40,7 +42,7 @@ export const Geocoder = ({ map }: { map: RefObject<mapboxgl.Map | null> }) => {
 		});
 
 		geocoderRef.current.addTo("#geocoder");
-	}, [addFullPoint, map]);
+	}, [addFullPoint, flyTo]);
 
 	return <div className="w-full max-w-none" id="geocoder" />;
 };

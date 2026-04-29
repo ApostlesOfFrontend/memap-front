@@ -13,8 +13,10 @@ export const newTripSchema = z.object({
 	route: z
 		.array(
 			z.object({
-				name: z.string().optional().nullable(),
+				name: z.string().nullable(),
 				location: z.tuple([z.number(), z.number()]),
+				clientId: z.string(),
+				totalPhotos: z.number(),
 			}),
 		)
 		.nonempty("You need to select trip points"),
