@@ -220,6 +220,6 @@ export const useCreateTripFlow = (onSuccessCallback: () => void) => {
 		reflow,
 		errors,
 		status,
-		progress: 66, //Math.round(progress * 100),
+		progress: Math.round(progress * 100),
 	};
 };
