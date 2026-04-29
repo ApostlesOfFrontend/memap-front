@@ -35,8 +35,7 @@ export const SaveTripDialog = ({ children }: { children: ReactNode }) => {
 		toggleDrawingMode();
 	};
 
-	const { flow, errors, status, isPending, reflow, progress } =
-		useCreateTripFlow(onSuccess);
+	const { flow, isPending, progress } = useCreateTripFlow(onSuccess);
 
 	const form = useAppForm({
 		defaultValues: {
