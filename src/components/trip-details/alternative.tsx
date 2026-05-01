@@ -7,6 +7,7 @@ import { differenceInDays } from "date-fns";
 import { ArrowLeft, MapIcon, RouteIcon } from "lucide-react";
 import { parseAsInteger, useQueryState } from "nuqs";
 import { useMemo } from "react";
+import { ImagePreview } from "../image/components/image-preview";
 import { Button } from "../ui/button";
 import { ErrorState } from "../ui/network/error";
 import { TripDetailsSkeleton } from "./skeleton";
@@ -74,6 +75,13 @@ export const TripCardAlteriative = ({ tripId }: { tripId: number }) => {
 						<ArrowLeft className="h-4 w-4" />
 					</Button>
 				</div>
+				{data.images.length ? (
+					<ImagePreview images={data.images} initialIndex={0}>
+						<Button>All images</Button>
+					</ImagePreview>
+				) : (
+					<Button disabled>All images</Button>
+				)}
 			</div>
 			<div className="rounded-lg border border-sidebar-border/80 bg-background/60 mx-2 p-3 flex flex-col gap-2">
 				<div className="flex items-center justify-between text-muted-foreground">
@@ -113,17 +121,25 @@ export const TripCardAlteriative = ({ tripId }: { tripId: number }) => {
 									</div>
 									{pointImages.length ? (
 										<div className="mt-3 grid grid-cols-2 gap-2">
-											{pointImages.map((image) => (
-												<div
+											{pointImages.map((image, imageIndex) => (
+												<ImagePreview
 													key={image.id}
-													className="overflow-hidden rounded-md border border-sidebar-border/80 bg-sidebar"
+													images={pointImages}
+													initialIndex={imageIndex}
+													label={pointName}
 												>
-													<img
-														src={`${API}/api/images/${image.id}?type=thumbnail`}
-														alt={image.name || pointName}
-														className="h-24 w-full object-cover"
-													/>
-												</div>
+													<button
+														type="button"
+														className="overflow-hidden rounded-md border border-sidebar-border/80 bg-sidebar transition-opacity hover:opacity-60 cursor-pointer"
+														aria-label={`Preview ${image.name || pointName}`}
+													>
+														<img
+															src={`${API}/api/images/${image.id}?type=thumbnail`}
+															alt={image.name || pointName}
+															className="h-24 w-full object-cover"
+														/>
+													</button>
+												</ImagePreview>
 											))}
 										</div>
 									) : (

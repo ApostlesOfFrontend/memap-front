@@ -1,5 +1,6 @@
 import { NewTrip } from "@/components/new-trip/new-trip";
 import { TripCardAlteriative } from "@/components/trip-details/alternative";
+import { TripDetails } from "@/components/trip-details/details";
 import {
 	Sidebar,
 	SidebarContent,

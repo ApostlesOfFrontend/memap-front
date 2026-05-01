@@ -3,14 +3,21 @@ import { API } from "@/api/util/fetch";
 import { Button } from "@/components/ui/button";
 import * as Dialog from "@radix-ui/react-dialog";
 import { ChevronLeft, ChevronRight, Eye, X } from "lucide-react";
-import { useState } from "react";
+import { type ReactNode, useState } from "react";
 
 type ImagePreviewProps = {
 	images: ImagesList;
 	initialIndex: number;
+	children?: ReactNode;
+	label?: string;
 };
 
-export const ImagePreview = ({ images, initialIndex }: ImagePreviewProps) => {
+export const ImagePreview = ({
+	images,
+	initialIndex,
+	children,
+	label,
+}: ImagePreviewProps) => {
 	const [open, setOpen] = useState(false);
 	const [currentIndex, setCurrentIndex] = useState(initialIndex);
 
@@ -50,9 +57,11 @@ export const ImagePreview = ({ images, initialIndex }: ImagePreviewProps) => {
 	return (
 		<Dialog.Root open={open} onOpenChange={handleOpenChange}>
 			<Dialog.Trigger asChild>
-				<Button>
-					<Eye />
-				</Button>
+				{children ?? (
+					<Button>
+						<Eye />
+					</Button>
+				)}
 			</Dialog.Trigger>
 			<Dialog.Portal>
 				<Dialog.Overlay className="fixed inset-0 bg-black/80 flex items-center justify-center z-50" />
@@ -96,6 +105,11 @@ export const ImagePreview = ({ images, initialIndex }: ImagePreviewProps) => {
 					<div className="absolute bottom-4 left-1/2 -translate-x-1/2 bg-black/50 text-white text-xs px-2 py-1 rounded-full">
 						{currentIndex + 1} / {images.length}
 					</div>
+					{label && (
+						<div className="absolute top-4 left-1/2 -translate-x-1/2 bg-black/50 text-white px-6 py-2 rounded-full text-xl">
+							{label}
+						</div>
+					)}
 				</Dialog.Content>
 			</Dialog.Portal>
 		</Dialog.Root>
