@@ -1,90 +1,142 @@
-import { Camera, MapIcon, RouteIcon } from "lucide-react";
-import {
-	Card,
-	CardContent,
-	CardDescription,
-	CardHeader,
-	CardTitle,
-} from "../ui/card";
+import type { ImagesList } from "@/api/images/list";
+import { useTripDetails } from "@/api/trip/hooks/get";
+import { API } from "@/api/util/fetch";
+import { QueryKeys } from "@/lib/nuqs-query-keys";
+import { selectedRouteStore } from "@/state/selected-route";
+import { differenceInDays } from "date-fns";
+import { ArrowLeft, MapIcon, RouteIcon } from "lucide-react";
+import { parseAsInteger, useQueryState } from "nuqs";
+import { useMemo } from "react";
+import { Button } from "../ui/button";
+import { ErrorState } from "../ui/network/error";
+import { TripDetailsSkeleton } from "./skeleton";
 
-export const TripCardAlteriative = () => {
+export const TripCardAlteriative = ({ tripId }: { tripId: number }) => {
+	const [_, setSelectedId] = useQueryState(
+		QueryKeys.SelectedTrip,
+		parseAsInteger,
+	);
+	const { data, isLoading, isError, refetch } = useTripDetails(tripId);
+	const { setRoute } = selectedRouteStore();
+
+	const groupedImages = useMemo(() => {
+		const groups = new Map<number, ImagesList>();
+		if (!data) return null;
+
+		for (const point of data.points) {
+			groups.set(point.id, []);
+		}
+		for (const image of data.images) {
+			const state = groups.get(image.pointId);
+			if (!state) return null;
+			state.push(image);
+		}
+
+		return groups;
+	}, [data]);
+
+	if (isLoading) return <TripDetailsSkeleton />;
+	if (!data || isError)
+		return (
+			<div className="mx-2 my-3">
+				<ErrorState onRetry={refetch} />
+			</div>
+		);
+
 	return (
-		<div className="flex-1">
-			<Card className="relative overflow-hidden border-border/60 bg-gradient-to-b from-card/80 via-card/60 to-background/40 shadow-xl shadow-black/40 backdrop-blur">
-				<div className="pointer-events-none absolute inset-0 bg-[radial-gradient(circle_at_top,_rgba(96,165,250,0.16)_0,_transparent_60%)]" />
-				<CardHeader className="relative">
-					<CardTitle className="flex items-center gap-2 text-sm font-medium text-muted-foreground">
-						<span className="flex h-6 w-6 items-center justify-center rounded-md bg-primary/15 text-primary">
-							<MapIcon className="h-3.5 w-3.5" />
-						</span>
-						<span>Weekend in Lisbon</span>
-					</CardTitle>
-					<CardDescription className="text-xs">
-						Route with 7 stops · 18 photos
-					</CardDescription>
-				</CardHeader>
-				<CardContent className="relative space-y-5">
-					<div className="rounded-xl border border-border/60 bg-gradient-to-br from-background/80 via-background/40 to-background/10 p-4">
-						<div className="mb-3 flex items-center justify-between text-xs text-muted-foreground">
-							<span className="inline-flex items-center gap-1.5">
-								<RouteIcon className="h-3.5 w-3.5 text-primary" />
-								<span>Trip timeline</span>
-							</span>
-							<span>2 days · 14.3km</span>
+		<div>
+			<div className="mx-2 my-3 flex flex-col gap-4 rounded-xl border border-sidebar-border/70 bg-sidebar-accent/30 p-4 shadow-sm">
+				<div className="flex items-start justify-between gap-3">
+					<div className="space-y-1">
+						<div className="flex items-center gap-2 text-sidebar-foreground">
+							<div className="flex h-8 w-8 items-center justify-center rounded-lg bg-primary/10 text-primary">
+								<MapIcon className="h-4 w-4" />
+							</div>
+							<h2 className="text-sm font-semibold tracking-tight text-sidebar-foreground">
+								{data.name}
+							</h2>
 						</div>
-						<ul className="space-y-2 text-xs">
-							<li className="flex items-center justify-between rounded-lg bg-background/60 px-2.5 py-1.5">
-								<div className="flex items-center gap-2">
-									<span className="h-1.5 w-1.5 rounded-full bg-emerald-400" />
-									<span className="font-medium text-foreground">
-										Alfama lookout
-									</span>
-								</div>
-								<span className="text-[11px] text-muted-foreground">
-									4 photos
-								</span>
-							</li>
-							<li className="flex items-center justify-between rounded-lg bg-background/40 px-2.5 py-1.5">
-								<div className="flex items-center gap-2">
-									<span className="h-1.5 w-1.5 rounded-full bg-sky-400" />
-									<span className="font-medium text-foreground">
-										Riverside walk
-									</span>
-								</div>
-								<span className="text-[11px] text-muted-foreground">
-									6 photos
-								</span>
-							</li>
-							<li className="flex items-center justify-between rounded-lg bg-background/30 px-2.5 py-1.5">
-								<div className="flex items-center gap-2">
-									<span className="h-1.5 w-1.5 rounded-full bg-pink-400" />
-									<span className="font-medium text-foreground">
-										Sunset at the pier
-									</span>
-								</div>
-								<span className="text-[11px] text-muted-foreground">
-									8 photos
-								</span>
-							</li>
-						</ul>
+						<p className="text-xs leading-relaxed text-muted-foreground">
+							Trip with {data.points.length} stops and {data.images.length}{" "}
+							photos
+						</p>
 					</div>
+					<Button
+						variant="ghost"
+						size="icon"
+						className="h-8 w-8 shrink-0"
+						onClick={() => {
+							setSelectedId(null);
+							setRoute([]);
+						}}
+						aria-label="Go back"
+					>
+						<ArrowLeft className="h-4 w-4" />
+					</Button>
+				</div>
+			</div>
+			<div className="rounded-lg border border-sidebar-border/80 bg-background/60 mx-2 p-3 flex flex-col gap-2">
+				<div className="flex items-center justify-between text-muted-foreground">
+					<span className="inline-flex items-center gap-1.5">
+						<RouteIcon className="h-3.5 w-3.5 text-primary" />
+						<span>Trip timeline</span>
+					</span>
+					<span>
+						{differenceInDays(new Date(data.dateFrom), new Date(data.dateTo))}{" "}
+						days
+					</span>
+				</div>
+				<div className="mt-2 flex flex-col h-full">
+					{data.points.map((point, index) => {
+						const pointImages = groupedImages?.get(point.id) ?? [];
+						const pointName = point.name?.trim() || `Stop ${index + 1}`;
+						const isLast = index === data.points.length - 1;
 
-					<div className="space-y-2">
-						<p className="text-xs font-medium text-foreground">Trip gallery</p>
-						<div className="grid grid-cols-4 gap-1.5">
-							<div className="aspect-[4/5] rounded-md bg-gradient-to-br from-sky-500/60 to-indigo-500/40" />
-							<div className="aspect-[4/5] rounded-md bg-gradient-to-br from-emerald-400/60 to-cyan-400/40" />
-							<div className="aspect-[4/5] rounded-md bg-gradient-to-br from-rose-500/60 to-orange-400/40" />
-							<div className="relative aspect-[4/5] rounded-md bg-muted/20">
-								<div className="absolute inset-0 flex items-center justify-center rounded-md border border-dashed border-border/80 bg-background/60 text-[11px] text-muted-foreground backdrop-blur">
-									<Camera className="mr-1.5 h-3.5 w-3.5" />
-									Add photo
+						return (
+							<div
+								key={point.id}
+								className="grid grid-cols-[20px_minmax(0,1fr)] gap-x-3"
+							>
+								<div className="flex flex-col items-center">
+									<div className="mt-1 h-3 w-3 rounded-full border-2 border-primary/70 bg-background" />
+									{!isLast ? (
+										<div className="mt-2 min-h-10 flex-1 w-px bg-sidebar-border" />
+									) : null}
+								</div>
+								<div className="pb-6">
+									<div className="text-sm font-medium text-sidebar-foreground">
+										{pointName}
+									</div>
+									<div className="mt-1 text-xs text-muted-foreground">
+										{pointImages.length} photo
+										{pointImages.length === 1 ? "" : "s"}
+									</div>
+									{pointImages.length ? (
+										<div className="mt-3 grid grid-cols-2 gap-2">
+											{pointImages.map((image) => (
+												<div
+													key={image.id}
+													className="overflow-hidden rounded-md border border-sidebar-border/80 bg-sidebar"
+												>
+													<img
+														src={`${API}/api/images/${image.id}?type=thumbnail`}
+														alt={image.name || pointName}
+														className="h-24 w-full object-cover"
+													/>
+												</div>
+											))}
+										</div>
+									) : (
+										<div className="mt-3 rounded-md border border-dashed border-sidebar-border/80 px-3 py-4 text-xs text-muted-foreground">
+											No photos for this stop yet.
+										</div>
+									)}
 								</div>
 							</div>
-						</div>
-					</div>
-				</CardContent>
-			</Card>
+						);
+					})}
+				</div>
+			</div>
 		</div>
 	);
 };
