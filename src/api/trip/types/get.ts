@@ -1,4 +1,5 @@
 import type { ImagesList } from "@/api/images/list";
+import type { POI } from "./list";
 
 export interface TripBaseI {
 	createdAt: string;
@@ -9,4 +10,5 @@ export interface TripBaseI {
 	name: string;
 	updatedAt: string;
 	images: ImagesList;
+	points: Array<POI>;
 }
