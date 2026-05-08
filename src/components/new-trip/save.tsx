@@ -1,4 +1,5 @@
 import { tripDraftStore } from "@/state/trip-draft";
+import { useRouter } from "@tanstack/react-router";
 import { type ReactNode, useState } from "react";
 import { toast } from "sonner";
 import { useAppForm } from "../forms/context";
@@ -20,6 +21,7 @@ import { useCreateTripFlow } from "./hooks/use-create-trip-flow";
 import TripLoader from "./trip_photo_loader.svg";
 
 export const SaveTripDialog = ({ children }: { children: ReactNode }) => {
+	const router = useRouter();
 	const { draftRoute, toggleDrawingMode } = tripDraftStore();
 	const [opened, setOpened] = useState(false);
 	const route = draftRoute.map(({ name, location, clientId, photos }) => ({
@@ -29,10 +31,10 @@ export const SaveTripDialog = ({ children }: { children: ReactNode }) => {
 		totalPhotos: photos.length,
 	}));
 
-	const onSuccess = () => {
-		//TODO: would be nice if you were taken to the trip
+	const onSuccess = (tripId: number) => {
 		setOpened(false);
 		toggleDrawingMode();
+		router.navigate({ to: "/app/map", search: { "selected-trip": tripId } });
 	};
 
 	const { flow, isPending, progress } = useCreateTripFlow(onSuccess);
@@ -47,8 +49,8 @@ export const SaveTripDialog = ({ children }: { children: ReactNode }) => {
 		validators: {
 			onSubmit: newTripSchema,
 		},
-		onSubmit: ({ value }) => {
-			flow({
+		onSubmit: async ({ value }) => {
+			await flow({
 				...value,
 				route,
 			});

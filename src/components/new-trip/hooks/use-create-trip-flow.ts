@@ -17,7 +17,9 @@ type FileUploadFlowError = {
 
 export type CreateTripFlowError = FlowError | FileUploadFlowError;
 
-export const useCreateTripFlow = (onSuccessCallback: () => void) => {
+export const useCreateTripFlow = (
+	onSuccessCallback: (tripId: number) => void,
+) => {
 	const { mutateAsync: createTrip, reset: resetCreateTrip } =
 		useCreateTripMutation();
 
@@ -46,15 +48,12 @@ export const useCreateTripFlow = (onSuccessCallback: () => void) => {
 		(acc, point) => acc + point.photos.length,
 		0,
 	);
-	console.log("Total photos to upload:", photosQty);
-	const totalActions = photosQty + 3; // 3 actions for createTrip, getBatchPresignedUploadUrl and confirmBatchUpload
-	console.log("total actions", totalActions);
+
+	// 3 actions for createTrip, getBatchPresignedUploadUrl and confirmBatchUpload when we have any images to upload
+	// if not, we just create trip and skip upload altogether
+	const totalActions = photosQty !== 0 ? photosQty + 3 : 1;
 	const incrementProgress = () => {
-		console.log("Incrementing progress");
 		setProgress((prev) => {
-			console.log(
-				`Previous progress: ${prev}%. Increment: ${1 / totalActions}%`,
-			);
 			return prev + 1 / totalActions;
 		});
 	};
@@ -116,92 +115,90 @@ export const useCreateTripFlow = (onSuccessCallback: () => void) => {
 				),
 		};
 
-		if (routeDTO.points.length === 0) {
-			return tripData;
-		}
+		if (photosQty !== 0) {
+			let presignedUrls: Awaited<ReturnType<typeof getBatchPresignedUploadUrl>>;
 
-		let presignedUrls: Awaited<ReturnType<typeof getBatchPresignedUploadUrl>>;
-
-		try {
-			setStatus("getting-presigned-urls");
-			presignedUrls = await getBatchPresignedUploadUrl(routeDTO);
-			incrementProgress();
-		} catch {
-			setErrors({ type: "get-presigned-urls" });
-			return;
-		}
-
-		const filesByClientId = getDraftFilesByClientId();
-
-		setStatus("uploading-files");
-		const results = await Promise.allSettled(
-			presignedUrls.map(async (url) => {
-				const file = filesByClientId.get(url.clientId);
-				if (!file) {
-					throw new Error(`Missing draft file for upload ${url.clientId}`);
-				}
-
-				const uploadResponse = await fetch(url.signedUrl, {
-					method: "PUT",
-					body: file,
-					headers: { "Content-Type": url.type },
-				});
-
-				if (!uploadResponse.ok) {
-					throw url;
-				}
+			try {
+				setStatus("getting-presigned-urls");
+				presignedUrls = await getBatchPresignedUploadUrl(routeDTO);
 				incrementProgress();
-			}),
-		);
+			} catch {
+				setErrors({ type: "get-presigned-urls" });
+				return;
+			}
 
-		const failedUploads = results
-			.filter((r): r is PromiseRejectedResult => r.status === "rejected")
-			.map((r) => r.reason)
-			.filter(
-				(reason): reason is { clientId: string; presignedUrl: string } =>
-					typeof reason?.clientId === "string" &&
-					typeof reason?.presignedUrl === "string",
+			const filesByClientId = getDraftFilesByClientId();
+
+			setStatus("uploading-files");
+			const results = await Promise.allSettled(
+				presignedUrls.map(async (url) => {
+					const file = filesByClientId.get(url.clientId);
+					if (!file) {
+						throw new Error(`Missing draft file for upload ${url.clientId}`);
+					}
+
+					const uploadResponse = await fetch(url.signedUrl, {
+						method: "PUT",
+						body: file,
+						headers: { "Content-Type": url.type },
+					});
+
+					if (!uploadResponse.ok) {
+						throw url;
+					}
+					incrementProgress();
+				}),
 			);
 
-		if (failedUploads.length > 0) {
-			setErrors({ type: "file-upload", images: failedUploads });
-		}
+			const failedUploads = results
+				.filter((r): r is PromiseRejectedResult => r.status === "rejected")
+				.map((r) => r.reason)
+				.filter(
+					(reason): reason is { clientId: string; presignedUrl: string } =>
+						typeof reason?.clientId === "string" &&
+						typeof reason?.presignedUrl === "string",
+				);
 
-		const failedClientIds = new Set(failedUploads.map((u) => u.clientId));
+			if (failedUploads.length > 0) {
+				setErrors({ type: "file-upload", images: failedUploads });
+			}
 
-		const imagesByPointId = new Map<number, string[]>();
-		for (const { pointId, uuid, clientId } of presignedUrls) {
-			if (failedClientIds.has(clientId)) continue;
-			const images = imagesByPointId.get(pointId) ?? [];
-			images.push(uuid);
-			imagesByPointId.set(pointId, images);
-		}
+			const failedClientIds = new Set(failedUploads.map((u) => u.clientId));
 
-		if (imagesByPointId.size === 0) {
-			return tripData;
-		}
+			const imagesByPointId = new Map<number, string[]>();
+			for (const { pointId, uuid, clientId } of presignedUrls) {
+				if (failedClientIds.has(clientId)) continue;
+				const images = imagesByPointId.get(pointId) ?? [];
+				images.push(uuid);
+				imagesByPointId.set(pointId, images);
+			}
 
-		const confirmPayload: ConfirmBatchUploadDTO = {
-			tripId: tripData.id,
-			points: Array.from(imagesByPointId.entries()).map(
-				([pointId, images]) => ({
-					pointId,
-					images,
-				}),
-			),
-		};
+			if (imagesByPointId.size === 0) {
+				return tripData;
+			}
 
-		try {
-			setStatus("confirming-uploads");
-			await confirmBatchUpload(confirmPayload);
-		} catch {
-			setErrors({ type: "confirm-uploads" });
+			const confirmPayload: ConfirmBatchUploadDTO = {
+				tripId: tripData.id,
+				points: Array.from(imagesByPointId.entries()).map(
+					([pointId, images]) => ({
+						pointId,
+						images,
+					}),
+				),
+			};
+
+			try {
+				setStatus("confirming-uploads");
+				await confirmBatchUpload(confirmPayload);
+			} catch {
+				setErrors({ type: "confirm-uploads" });
+			}
 		}
 
 		incrementProgress();
 		setStatus("completed");
 		setIsPending(false);
-		onSuccessCallback();
+		onSuccessCallback(tripData.id);
 		return tripData;
 	};
 
