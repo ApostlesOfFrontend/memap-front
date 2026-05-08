@@ -13,7 +13,7 @@ import {
 	arrayMove,
 	verticalListSortingStrategy,
 } from "@dnd-kit/sortable";
-import { MapPinned, RouteIcon, RotateCcw, Save, X } from "lucide-react";
+import { MapPinned, RotateCcw, RouteIcon, Save, X } from "lucide-react";
 import { Geocoder } from "../map/geocoder";
 import { Button } from "../ui/button";
 import { DraftRoutePoint } from "./draft-point-row";
@@ -98,7 +98,7 @@ export const NewTrip = () => {
 
 				<Geocoder />
 
-				<div className="mt-3 flex max-h-[400px] flex-col gap-2 overflow-auto pr-1">
+				<div className="mt-3 flex flex-col gap-2 overflow-auto pr-1">
 					<DndContext
 						sensors={sensors}
 						collisionDetection={closestCenter}

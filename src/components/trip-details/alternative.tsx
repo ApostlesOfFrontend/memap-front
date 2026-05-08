@@ -1,12 +1,13 @@
 import type { ImagesList } from "@/api/images/list";
 import { useTripDetails } from "@/api/trip/hooks/get";
+import { transformPointsToRoute } from "@/api/trip/util/transform-points";
 import { API } from "@/api/util/fetch";
 import { QueryKeys } from "@/lib/nuqs-query-keys";
 import { selectedRouteStore } from "@/state/selected-route";
 import { differenceInDays } from "date-fns";
 import { ArrowLeft, MapIcon, RouteIcon } from "lucide-react";
 import { parseAsInteger, useQueryState } from "nuqs";
-import { useMemo } from "react";
+import { useEffect, useMemo } from "react";
 import { ImagePreview } from "../image/components/image-preview";
 import { Button } from "../ui/button";
 import { ErrorState } from "../ui/network/error";
@@ -19,6 +20,10 @@ export const TripCardAlteriative = ({ tripId }: { tripId: number }) => {
 	);
 	const { data, isLoading, isError, refetch } = useTripDetails(tripId);
 	const { setRoute } = selectedRouteStore();
+
+	useEffect(() => {
+		if (data) setRoute(transformPointsToRoute(data.points));
+	}, [data, setRoute]);
 
 	const groupedImages = useMemo(() => {
 		const groups = new Map<number, ImagesList>();
