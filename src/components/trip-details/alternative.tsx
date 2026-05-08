@@ -95,7 +95,7 @@ export const TripCardAlteriative = ({ tripId }: { tripId: number }) => {
 						<span>Trip timeline</span>
 					</span>
 					<span>
-						{differenceInDays(new Date(data.dateFrom), new Date(data.dateTo))}{" "}
+						{differenceInDays(new Date(data.dateTo), new Date(data.dateFrom))}{" "}
 						days
 					</span>
 				</div>
