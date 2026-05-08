@@ -1,8 +1,10 @@
 import { LoginForm } from "@/components/auth/login/login";
+import { isAlreadyAuthenticatedGuard } from "@/guards/is-already-authenticated";
 import { createFileRoute } from "@tanstack/react-router";
 
 export const Route = createFileRoute("/(auth)/login")({
 	component: Login,
+	beforeLoad: isAlreadyAuthenticatedGuard,
 });
 
 function Login() {
