@@ -94,7 +94,7 @@ export const ImagePreview = ({
 						<ChevronRight size={20} />
 					</Button>
 
-					<div className="flex items-center justify-center">
+					<div className="flex items-center justify-center w-full h-full">
 						<img
 							src={`${API}/api/images/${currentImage.id}?type=full`}
 							alt=""

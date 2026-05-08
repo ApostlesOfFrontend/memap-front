@@ -113,8 +113,8 @@ export function AppSidebar() {
 	);
 
 	return (
-		<Sidebar collapsible="icon" variant="floating">
-			<SidebarContent className="h-screen gap-0 overflow-hidden">
+		<Sidebar collapsible="icon" variant="sidebar">
+			<SidebarContent className="h-full min-h-0 gap-0 overflow-hidden">
 				<div className="flex min-h-0 flex-1 flex-col overflow-y-auto">
 					<AnimatePresence mode="wait" initial={false}>
 						{activePanel}
