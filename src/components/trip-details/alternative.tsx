@@ -4,6 +4,7 @@ import { transformPointsToRoute } from "@/api/trip/util/transform-points";
 import { API } from "@/api/util/fetch";
 import { QueryKeys } from "@/lib/nuqs-query-keys";
 import { selectedRouteStore } from "@/state/selected-route";
+import { isImageProcessed } from "@/util/image-processing";
 import { differenceInDays } from "date-fns";
 import { ArrowLeft, MapIcon, RouteIcon } from "lucide-react";
 import { parseAsInteger, useQueryState } from "nuqs";
@@ -21,9 +22,13 @@ export const TripCardAlteriative = ({ tripId }: { tripId: number }) => {
 	const { data, isLoading, isError, refetch } = useTripDetails(tripId);
 	const { setRoute } = selectedRouteStore();
 
-	useEffect(() => {
-		if (data) setRoute(transformPointsToRoute(data.points));
-	}, [data, setRoute]);
+	// used to initialize after hard refresh
+	useEffect(
+		function initialize() {
+			if (data) setRoute(transformPointsToRoute(data.points));
+		},
+		[data, setRoute],
+	);
 
 	const groupedImages = useMemo(() => {
 		const groups = new Map<number, ImagesList>();
@@ -132,17 +137,29 @@ export const TripCardAlteriative = ({ tripId }: { tripId: number }) => {
 													images={pointImages}
 													initialIndex={imageIndex}
 													label={pointName}
+													finisedProcessing={isImageProcessed(image.status)}
 												>
 													<button
 														type="button"
 														className="overflow-hidden rounded-md border border-sidebar-border/80 bg-sidebar transition-opacity hover:opacity-60 cursor-pointer"
 														aria-label={`Preview ${image.name || pointName}`}
 													>
-														<img
-															src={`${API}/api/images/${image.id}?type=thumbnail`}
-															alt={image.name || pointName}
-															className="h-24 w-full object-cover"
-														/>
+														{isImageProcessed(image.status) ? (
+															<img
+																src={`${API}/api/images/${image.id}?type=thumbnail`}
+																alt={image.name || pointName}
+																className="h-24 w-full object-cover"
+															/>
+														) : (
+															<div className="h-24 w-full flex flex-col items-center justify-center gap-1.5 bg-sidebar-accent/40">
+																<div className="relative flex items-center justify-center">
+																	<div className="h-5 w-5 rounded-full border-2 border-sidebar-border border-t-sidebar-foreground/60 animate-spin" />
+																</div>
+																<span className="text-[10px] font-medium text-sidebar-foreground/50 tracking-wide uppercase">
+																	Processing…
+																</span>
+															</div>
+														)}
 													</button>
 												</ImagePreview>
 											))}
