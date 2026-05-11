@@ -10,6 +10,7 @@ type ImagePreviewProps = {
 	initialIndex: number;
 	children?: ReactNode;
 	label?: string;
+	finisedProcessing?: boolean;
 };
 
 export const ImagePreview = ({
@@ -17,6 +18,7 @@ export const ImagePreview = ({
 	initialIndex,
 	children,
 	label,
+	finisedProcessing = true,
 }: ImagePreviewProps) => {
 	const [open, setOpen] = useState(false);
 	const [currentIndex, setCurrentIndex] = useState(initialIndex);
@@ -26,6 +28,7 @@ export const ImagePreview = ({
 	}
 
 	const handleOpenChange = (nextOpen: boolean) => {
+		if (!finisedProcessing) return false;
 		setOpen(nextOpen);
 		if (nextOpen) {
 			setCurrentIndex(initialIndex);
@@ -50,6 +53,10 @@ export const ImagePreview = ({
 			event.preventDefault();
 			navigate("next");
 		}
+		if (event.key === "Escape") {
+			event.preventDefault();
+			setOpen(false);
+		}
 	};
 
 	const currentImage = images[currentIndex];
@@ -66,7 +73,7 @@ export const ImagePreview = ({
 			<Dialog.Portal>
 				<Dialog.Overlay className="fixed inset-0 bg-black/80 flex items-center justify-center z-50" />
 				<Dialog.Content
-					className="fixed top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[90vw] h-[90vh] z-50 focus:outline-none"
+					className="fixed top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[90vw] h-[90vh] z-60 focus:outline-none"
 					onKeyDown={handleKeyDown}
 					tabIndex={-1}
 				>
@@ -74,14 +81,14 @@ export const ImagePreview = ({
 					<Dialog.Description className="hidden">
 						Dialog for image preview
 					</Dialog.Description>
-					<Dialog.Close className="absolute top-4 right-4 bg-white/50 rounded-full w-8 h-8 flex items-center justify-center cursor-pointer text-black z-50">
+					<Dialog.Close className="absolute top-4 right-4 bg-white/50 rounded-full w-12 h-12 flex items-center justify-center cursor-pointer text-black z-50">
 						<X size={20} />
 					</Dialog.Close>
 
 					<Button
 						type="button"
 						onClick={() => navigate("prev")}
-						className="absolute left-4 top-1/2 -translate-y-1/2 bg-white/50 rounded-full w-8 h-8 flex items-center justify-center cursor-pointer text-black z-50"
+						className="absolute left-4 bottom-2 md:top-1/2 md:-translate-y-1/2 bg-white/50 rounded-full w-12 h-12 flex items-center justify-center cursor-pointer text-black z-50"
 					>
 						<ChevronLeft size={20} />
 					</Button>
@@ -89,20 +96,28 @@ export const ImagePreview = ({
 					<Button
 						type="button"
 						onClick={() => navigate("next")}
-						className="absolute right-4 top-1/2 -translate-y-1/2 bg-white/50 rounded-full w-8 h-8 flex items-center justify-center cursor-pointer text-black z-50"
+						className="absolute right-4 bottom-2 md:top-1/2 md:-translate-y-1/2 bg-white/50 rounded-full w-12 h-12 flex items-center justify-center cursor-pointer text-black z-50"
 					>
 						<ChevronRight size={20} />
 					</Button>
 
-					<div className="flex items-center justify-center w-full h-full">
+					{/* biome-ignore lint/a11y/useKeyWithClickEvents: click on overlay should hide image preview */}
+					<div
+						className="flex items-center justify-center w-full h-full"
+						onClick={() => {
+							setOpen(false);
+						}}
+					>
+						{/* biome-ignore lint/a11y/useKeyWithClickEvents: in pair with previous - accidental clicking on image should not hide image preview */}
 						<img
 							src={`${API}/api/images/${currentImage.id}?type=full`}
 							alt=""
 							className="max-w-[90vw] max-h-[90vh] object-contain"
+							onClick={(e) => e.stopPropagation()}
 						/>
 					</div>
 
-					<div className="absolute bottom-4 left-1/2 -translate-x-1/2 bg-black/50 text-white text-xs px-2 py-1 rounded-full">
+					<div className="absolute bottom-5 left-1/2 -translate-x-1/2 bg-black/50 text-white text-xs px-2 py-1 rounded-full">
 						{currentIndex + 1} / {images.length}
 					</div>
 					{label && (
