@@ -8,37 +8,50 @@ export const CallToAction = () => {
 	const { isAuthenticated } = useAuth();
 	return (
 		<section
-			className="mx-auto max-w-4xl px-4 pb-20 sm:px-6 lg:px-8"
+			className="mx-auto max-w-7xl px-4 pb-20 sm:px-6 lg:px-8 lg:pb-24"
 			aria-labelledby="cta-title"
 		>
-			<FadeIn className="overflow-hidden rounded-2xl border border-border/70 bg-gradient-to-r from-primary/15 via-background/80 to-emerald-500/10 p-[1px]">
-				<div className="flex flex-col items-start gap-4 bg-background/90 px-5 py-6 sm:flex-row sm:items-center sm:justify-between sm:px-8 sm:py-7">
-					<div className="space-y-1.5">
-						<h2
-							id="cta-title"
-							className="text-base font-semibold tracking-tight sm:text-lg"
-						>
-							Start drawing your next memory today.
-						</h2>
-						<p className="max-w-xl text-xs text-muted-foreground sm:text-sm">
-							Open the map, add your first stop, and see how quickly a simple
-							route turns into a trip you&apos;ll actually remember.
-						</p>
-					</div>
-					<div className="flex flex-col gap-2">
-						{isAuthenticated && (
-							<Button asChild size="sm">
-								<Link to="/app/map">
-									Open the app
-									<ArrowRight className="ml-1.5 h-4 w-4" />
-								</Link>
-							</Button>
-						)}
-						{!isAuthenticated && (
-							<Button asChild variant="outline" size="sm">
-								<Link to="/login">Sign in</Link>
-							</Button>
-						)}
+			<FadeIn>
+				<div className="relative overflow-hidden rounded-2xl border border-border/80 bg-sidebar px-5 py-7 shadow-sm sm:px-8 sm:py-9">
+					<div className="absolute -right-16 -top-20 h-48 w-48 rounded-full bg-primary/10 blur-3xl" />
+					<div className="relative flex flex-col items-start gap-6 sm:flex-row sm:items-center sm:justify-between">
+						<div className="space-y-2">
+							<p className="text-xs font-semibold uppercase tracking-[0.18em] text-primary">
+								Keep the map close
+							</p>
+							<h2
+								id="cta-title"
+								className="text-xl font-semibold tracking-tight sm:text-2xl"
+							>
+								Give your next trip a place to live.
+							</h2>
+							<p className="max-w-xl text-sm leading-relaxed text-muted-foreground">
+								Open the map, add your first stop, and see how quickly a simple
+								route turns into a trip you&apos;ll actually remember.
+							</p>
+						</div>
+						<div className="flex shrink-0 flex-col gap-2 sm:flex-row">
+							{isAuthenticated ? (
+								<Button asChild>
+									<Link to="/app/map">
+										Open your map
+										<ArrowRight className="h-4 w-4" />
+									</Link>
+								</Button>
+							) : (
+								<>
+									<Button asChild>
+										<Link to="/register">
+											Create your map
+											<ArrowRight className="h-4 w-4" />
+										</Link>
+									</Button>
+									<Button asChild variant="outline">
+										<Link to="/login">Sign in</Link>
+									</Button>
+								</>
+							)}
+						</div>
 					</div>
 				</div>
 			</FadeIn>
