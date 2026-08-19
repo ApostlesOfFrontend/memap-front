@@ -1,47 +1,73 @@
 import { Images, MapIcon, RouteIcon } from "lucide-react";
 import { FadeIn } from "../ui/fade-in";
-import { Feature } from "./components/feature";
+
+const steps = [
+	{
+		icon: <MapIcon className="h-4 w-4" />,
+		title: "Plot your route",
+		description:
+			"Open the map, sketch your journey, and drop points for every place worth remembering.",
+	},
+	{
+		icon: <Images className="h-4 w-4" />,
+		title: "Attach your photos",
+		description:
+			"Add multiple images to each stop so the map holds more than just a line.",
+	},
+	{
+		icon: <RouteIcon className="h-4 w-4" />,
+		title: "Replay the story",
+		description:
+			"Return to the route and revisit the moments tied to the exact place they happened.",
+	},
+];
 
 export const HowItWorks = () => {
 	return (
 		<section
-			className="mx-auto max-w-5xl px-4 pb-16 sm:px-6 lg:px-8"
+			className="mx-auto max-w-7xl px-4 pb-20 sm:px-6 lg:px-8 lg:pb-24"
 			aria-labelledby="how-it-works-title"
 		>
-			<FadeIn className="space-y-8 sm:space-y-10">
-				<div className="flex flex-col gap-2 sm:flex-row sm:items-end sm:justify-between">
+			<FadeIn>
+				<div className="mb-8 flex flex-col gap-3 sm:mb-10 sm:flex-row sm:items-end sm:justify-between">
 					<div>
 						<p className="text-xs font-semibold uppercase tracking-[0.18em] text-primary">
 							How it works
 						</p>
 						<h2
 							id="how-it-works-title"
-							className="mt-1 text-lg font-semibold tracking-tight sm:text-xl"
+							className="mt-2 text-2xl font-semibold tracking-tight sm:text-3xl"
 						>
 							From a blank map to a trip you can replay.
 						</h2>
 					</div>
-					<p className="max-w-md text-xs text-muted-foreground sm:text-sm">
-						Memap is built for flow: add a route, drop the important stops, and
-						attach the photos that matter at each point along the way.
+					<p className="max-w-md text-sm leading-relaxed text-muted-foreground">
+						Add a route, drop the important stops, and attach the photos that
+						matter at each point along the way.
 					</p>
 				</div>
-				<div className="grid gap-4 md:grid-cols-3">
-					<Feature
-						icon={<MapIcon />}
-						title="Plot your route"
-						description="Open the map, sketch your journey, and drop points for every place worth remembering."
-					/>
-					<Feature
-						icon={<Images />}
-						title="Attach your photos"
-						description="Add multiple images to each stop so your map looks exactly like the trip felt."
-					/>
-					<Feature
-						icon={<RouteIcon />}
-						title="Replay the story"
-						description="Scroll through your route, tap into each stop, and revisit the moments tied to the exact place they happened."
-					/>
+
+				<div className="overflow-hidden rounded-2xl border border-border/80 bg-card shadow-sm">
+					<div className="grid divide-y divide-border/80 md:grid-cols-3 md:divide-x md:divide-y-0">
+						{steps.map((step, index) => (
+							<article key={step.title} className="p-5 sm:p-7">
+								<div className="flex items-center justify-between gap-4">
+									<div className="flex h-9 w-9 items-center justify-center rounded-lg bg-primary/10 text-primary">
+										{step.icon}
+									</div>
+									<span className="text-xs font-medium tabular-nums text-muted-foreground">
+										0{index + 1}
+									</span>
+								</div>
+								<h3 className="mt-8 text-base font-semibold tracking-tight">
+									{step.title}
+								</h3>
+								<p className="mt-2 text-sm leading-relaxed text-muted-foreground">
+									{step.description}
+								</p>
+							</article>
+						))}
+					</div>
 				</div>
 			</FadeIn>
 		</section>
